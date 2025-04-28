@@ -42,7 +42,7 @@ const ServiceOverview = () => {
                         </li>
                         <li className="flex items-start">
                           <FaCheck className="fas fa-check text-green-500 mt-1 mr-2"/>
-                          <span>Website localization and content adaptation</span>
+                          <span>In Person Translation</span>
                         </li>
                         <li className="flex items-start">
                           <FaCheck className="fas fa-check text-green-500 mt-1 mr-2"/>
