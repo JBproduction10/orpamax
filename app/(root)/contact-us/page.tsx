@@ -44,7 +44,7 @@ const page= () => {
     {
       question: "What areas do you service?",
       answer:
-        "We currently provide our cleaning and translation services in New York City and surrounding areas including Brooklyn, Queens, Bronx, Staten Island, and parts of New Jersey and Connecticut. For translation services, we can work with clients worldwide through our online platform.",
+        "We currently provide our cleaning and translation services in Portland, Maine and surrounding areas, we can work with clients worldwide through our online platform.",
     },
     {
       question: "How do I schedule a cleaning service?",
@@ -54,7 +54,7 @@ const page= () => {
     {
       question: "What languages do you translate?",
       answer:
-        "Our professional translators cover over 50 languages including Spanish, French, German, Chinese, Japanese, Arabic, Russian, Portuguese, Italian, Korean, and many more. If you need a specific language pair, please contact us to confirm availability.",
+        "Our professional translators cover over 5 languages including Spanish, French, Lingala, Swahili, and many more. If you need a specific language pair, please contact us to confirm availability.",
     },
     {
       question: "Do you provide certified translations?",
