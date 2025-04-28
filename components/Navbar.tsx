@@ -26,7 +26,7 @@ const Navbar = () => {
                     <Link href="/"><h1 className="text-xl font-bold text-blue-600">ORPAMAX</h1></Link>
                 </div>
                 {/* Nav Links */}
-                <div className="hidden md:flex items-center space-x-6 text-3xl">
+                <div className="hidden md:flex items-center space-x-6 text-lg">
                     <Link href="/" className={`${pathname === "/" ? "text-blue-700" : "text-gray-700"}`}>
                         Home
                     </Link>
