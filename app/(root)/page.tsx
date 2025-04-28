@@ -185,7 +185,7 @@ const App: React.FC = () => {
                       <Button
                         variant="outline"
                         size="lg"
-                        className="bg-white/10 text-white hover:bg-white/20 !rounded-button whitespace-nowrap"
+                        className="bg-white/10 text-black hover:bg-white/20 !rounded-button whitespace-nowrap"
                       >
                         Our Services <FaArrowRight className="fas fa-arrow-right ml-2"/>
                       </Button>
