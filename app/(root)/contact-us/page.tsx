@@ -54,7 +54,7 @@ const page= () => {
     {
       question: "What languages do you translate?",
       answer:
-        "Our professional translators cover over 5 languages including Spanish, French, Lingala, Swahili, and many more. If you need a specific language pair, please contact us to confirm availability.",
+        "Our professional translators cover over 3 languages including French, Lingala, Swahili, and many more. If you need a specific language pair, please contact us to confirm availability.",
     },
     {
       question: "Do you provide certified translations?",
