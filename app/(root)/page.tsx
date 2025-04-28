@@ -173,7 +173,7 @@ const App: React.FC = () => {
                     </h1>
                     <p className="text-xl mb-8">
                       Bridging languages and creating spotless environments for
-                      homes and businesses worldwide.
+                      homes and businesses acrossthe country.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4">
                       <Button
