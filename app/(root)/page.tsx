@@ -167,7 +167,7 @@ const App: React.FC = () => {
                   }}
                 ></div>
                 <div className="relative container mx-auto px-4 h-full flex flex-col justify-center">
-                  <div className="max-w-2xl text-white">
+                  <div className="max-w-2xl text-black">
                     <h1 className="text-4xl md:text-5xl font-bold mb-4">
                       Professional Translation & Cleaning Services
                     </h1>

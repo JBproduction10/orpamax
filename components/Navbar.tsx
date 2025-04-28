@@ -1,6 +1,6 @@
 "use client";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@radix-ui/react-select';
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from './ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -9,7 +9,12 @@ import { usePathname } from "next/navigation";
 
 const Navbar = () => {
     const pathname = usePathname();
-
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+      
     return (
         <header className="fixed top-0 left-0 right-0 bg-white shadow-sm z-50">
             <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -58,9 +63,45 @@ const Navbar = () => {
                         variant="outline"
                         size="icon"
                         className="md:hidden !rounded-button whitespace-nowrap"
+                        onClick={toggleMobileMenu}
+                        id="mobile-menu-button"
                     >
                         <FaBars />
                     </Button>
+                    {isMobileMenuOpen && (
+                        <div className="absolute top-full left-0 right-0 bg-white shadow-lg md:hidden z-50">
+                            <div className="p-4 space-y-2">
+                                <Link
+                                    href="/"
+                                    data-readdy="true"
+                                    className="block px-4 py-2 text-gray-600 hover:bg-blue-50 rounded-md transition-colors"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                >
+                                    Home
+                                </Link>
+                                <Link href="/translation-services"
+                                    className="w-full justify-start rounded whitespace-nowrap"
+                                >
+                                    Translation Services
+                                </Link>
+                                <Link href="/cleaning-services"
+                                    className="w-full justify-start !rounded-button whitespace-nowrap"
+                                >
+                                    Cleaning Services
+                                </Link>
+                                <Link href="/quotes"
+                                    className="w-full justify-start !rounded-button whitespace-nowrap"
+                                >
+                                    Get A Quote
+                                </Link>
+                                <Link href="/contact-us"
+                                    className="w-full justify-start !rounded-button whitespace-nowrap"
+                                >
+                                    Contact Us
+                                </Link>
+                            </div>
+                            </div>
+                    )}
                 </div>
             </div>
         </header>
