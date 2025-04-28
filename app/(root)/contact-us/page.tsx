@@ -27,7 +27,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { FaDirections, FaEnvelope, FaFacebook, FaHeadset, FaInstagram, FaLinkedin, FaMapMarker, FaPaperPlane, FaPhone, FaPhoneAlt } from "react-icons/fa";
+import { FaClock, FaDirections, FaEnvelope, FaFacebook, FaHeadset, FaInstagram, FaLinkedin, FaMapMarker, FaPaperPlane, FaPhone, FaPhoneAlt } from "react-icons/fa";
 import Link from "next/link";
 const page= () => {
   const [activeTab, setActiveTab] = useState("contact");
@@ -166,19 +166,19 @@ const page= () => {
               </CardHeader>
               <CardContent className="text-center">
                 <p className="text-gray-700 mb-2">
-                  General: info@cleanspeak.com
+                  General: info@orpamax.com
                 </p>
                 <p className="text-gray-700 mb-2">
-                  Support: support@cleanspeak.com
+                  Support: support@orpamax.com
                 </p>
                 <p className="text-gray-700 mb-4">
-                  Careers: careers@cleanspeak.com
+                  Careers: careers@orpamax.com
                 </p>
                 <Button
                   variant="outline"
                   className="!rounded-button whitespace-nowrap"
                 >
-                  <i className="fas fa-paper-plane mr-2"></i> Send Email
+                  <FaPaperPlane className="fas fa-paper-plane mr-2"/> Send Email
                 </Button>
               </CardContent>
             </Card>
@@ -195,21 +195,21 @@ const page= () => {
                     <div className="space-y-4">
                       <div className="flex justify-between items-center pb-2 border-b border-gray-100">
                         <div className="flex items-center">
-                          <i className="fas fa-clock text-blue-600 mr-3"></i>
+                          <FaClock className="fas fa-clock text-blue-600 mr-3"/>
                           <span className="font-medium">Monday - Friday</span>
                         </div>
                         <span>8:00 AM - 6:00 PM</span>
                       </div>
                       <div className="flex justify-between items-center pb-2 border-b border-gray-100">
                         <div className="flex items-center">
-                          <i className="fas fa-clock text-blue-600 mr-3"></i>
+                          <FaClock className="fas fa-clock text-blue-600 mr-3"/>
                           <span className="font-medium">Saturday</span>
                         </div>
                         <span>9:00 AM - 4:00 PM</span>
                       </div>
                       <div className="flex justify-between items-center pb-2 border-b border-gray-100">
                         <div className="flex items-center">
-                          <i className="fas fa-clock text-blue-600 mr-3"></i>
+                          <FaClock className="fas fa-clock text-blue-600 mr-3"/>
                           <span className="font-medium">Sunday</span>
                         </div>
                         <span>Closed</span>
