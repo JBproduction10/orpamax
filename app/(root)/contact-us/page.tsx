@@ -27,8 +27,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
 import { FaDirections, FaEnvelope, FaFacebook, FaHeadset, FaInstagram, FaLinkedin, FaMapMarker, FaPaperPlane, FaPhone, FaPhoneAlt } from "react-icons/fa";
 import Link from "next/link";
 const page= () => {
