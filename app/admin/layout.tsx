@@ -6,12 +6,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <BusinessInfoProvider>
-      <div className="flex flex-col pt-20 scroll-smooth">
-        <main className="flex-grow flex flex-col">
-          {children}
-        </main>
-      </div>
-    </BusinessInfoProvider>
+    
+    <div className="flex flex-col pt-20 scroll-smooth">
+      <main className="flex-grow flex flex-col">
+        {children}
+      </main>
+    </div>
   );
 }

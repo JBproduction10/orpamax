@@ -1,35 +1,50 @@
-// context/BusinessInfoContext.tsx
-"use client";
+// contexts/BusinessInfoContext.tsx
+'use client'
 
-import React, { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from 'react'
 
-type BusinessInfo = {
-  // your business info type
-  phone?: string;
-  email?: string;
-  address?: string;
-};
+export type BusinessInfo = {
+  hoursWeekdays: string
+  hoursSaturday: string
+  hoursSunday: string
+  holidayHours: string
+  emergencyServices: string
+  locationName: string
+  locationCity: string
+  locationLat?: number
+  locationLng?: number
+}
 
-type ContextType = {
-  info: BusinessInfo;
-  setInfo: React.Dispatch<React.SetStateAction<BusinessInfo>>;
-};
+type BusinessContextType = {
+  data: BusinessInfo | null
+  refresh: () => Promise<void>
+  setData: (info: BusinessInfo) => void
+}
 
-const BusinessInfoContext = createContext<ContextType | undefined>(undefined);
-
-export const BusinessInfoProvider = ({ children }: { children: React.ReactNode }) => {
-  const [info, setInfo] = useState<BusinessInfo>({});
-  return (
-    <BusinessInfoContext.Provider value={{ info, setInfo }}>
-      {children}
-    </BusinessInfoContext.Provider>
-  );
-};
+const BusinessInfoContext = createContext<BusinessContextType | null>(null)
 
 export const useBusinessInfo = () => {
-  const context = useContext(BusinessInfoContext);
-  if (!context) {
-    throw new Error("useBusinessInfo must be used within BusinessInfoProvider");
+  const ctx = useContext(BusinessInfoContext)
+  if (!ctx) throw new Error('useBusinessInfo must be used within BusinessInfoProvider')
+  return ctx
+}
+
+export const BusinessInfoProvider = ({ children }: { children: React.ReactNode }) => {
+  const [data, setData] = useState<BusinessInfo | null>(null)
+
+  const refresh = async () => {
+    const res = await fetch('/api/business-info')
+    const json = await res.json()
+    setData(json)
   }
-  return context;
-};
+
+  useEffect(() => {
+    refresh()
+  }, [])
+
+  return (
+    <BusinessInfoContext.Provider value={{ data, refresh, setData }}>
+      {children}
+    </BusinessInfoContext.Provider>
+  )
+}

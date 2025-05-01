@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { FaClock, FaMapMarker, FaDirections } from 'react-icons/fa'
 import { Card, CardContent } from '../ui/card'
-import { useBusinessInfo } from '@/contexts/contact/BusinessInfoContext'
 
 type BusinessInfo = {
   hoursWeekdays: string
@@ -21,20 +20,19 @@ type BusinessInfo = {
 const BusinessHourMap = () => {
   const [businessInfo, setBusinessInfo] = useState<BusinessInfo | null>(null)
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const res = await fetch('/api/business-info')
-  //       const data = await res.json()
-  //       setBusinessInfo(data)
-  //     } catch (err) {
-  //       console.error('Failed to load business info', err)
-  //     }
-  //   }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch('/api/contact-us/business-info')
+        const data = await res.json()
+        setBusinessInfo(data)
+      } catch (err) {
+        console.error('Failed to load business info', err)
+      }
+    }
 
-  //   fetchData()
-  // }, [])
-    // const { data } = useBusinessInfo()
+    fetchData()
+  }, [])
 
   if (!businessInfo) return <p className="text-center py-20">Loading business info...</p>
 
