@@ -1,6 +1,6 @@
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@radix-ui/react-select';
 import React from 'react'
-import { Button } from 'react-day-picker';
+import { Button } from '@/components/ui/button';
 import { FaPaperPlane } from 'react-icons/fa';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../ui/card';
 import { Input } from '../ui/input';
@@ -97,7 +97,7 @@ const ContactForm = () => {
                   <div className="flex items-start space-x-2">
                     <input type="checkbox" id="consent" className="mt-1" />
                     <Label htmlFor="consent" className="text-sm text-gray-600">
-                      I consent to CleanSpeak Services collecting and storing my
+                      I consent to ORPAMAX Services collecting and storing my
                       data from this form. For more details, please see our{" "}
                       <a href="#" className="text-blue-600 hover:underline">
                         Privacy Policy
