@@ -34,7 +34,7 @@ const BusinessHourMap = () => {
 
   //   fetchData()
   // }, [])
-    const { data } = useBusinessInfo()
+    // const { data } = useBusinessInfo()
 
   if (!businessInfo) return <p className="text-center py-20">Loading business info...</p>
 

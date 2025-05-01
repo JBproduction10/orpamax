@@ -1,50 +1,35 @@
-// contexts/BusinessInfoContext.tsx
-'use client'
+// context/BusinessInfoContext.tsx
+"use client";
 
-import { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useState } from "react";
 
-export type BusinessInfo = {
-  hoursWeekdays: string
-  hoursSaturday: string
-  hoursSunday: string
-  holidayHours: string
-  emergencyServices: string
-  locationName: string
-  locationCity: string
-  locationLat?: number
-  locationLng?: number
-}
+type BusinessInfo = {
+  // your business info type
+  phone?: string;
+  email?: string;
+  address?: string;
+};
 
-type BusinessContextType = {
-  data: BusinessInfo | null
-  refresh: () => Promise<void>
-  setData: (info: BusinessInfo) => void
-}
+type ContextType = {
+  info: BusinessInfo;
+  setInfo: React.Dispatch<React.SetStateAction<BusinessInfo>>;
+};
 
-const BusinessInfoContext = createContext<BusinessContextType | null>(null)
-
-export const useBusinessInfo = () => {
-  const ctx = useContext(BusinessInfoContext)
-  if (!ctx) throw new Error('useBusinessInfo must be used within BusinessInfoProvider')
-  return ctx
-}
+const BusinessInfoContext = createContext<ContextType | undefined>(undefined);
 
 export const BusinessInfoProvider = ({ children }: { children: React.ReactNode }) => {
-  const [data, setData] = useState<BusinessInfo | null>(null)
-
-  const refresh = async () => {
-    const res = await fetch('/api/business-info')
-    const json = await res.json()
-    setData(json)
-  }
-
-  useEffect(() => {
-    refresh()
-  }, [])
-
+  const [info, setInfo] = useState<BusinessInfo>({});
   return (
-    <BusinessInfoContext.Provider value={{ data, refresh, setData }}>
+    <BusinessInfoContext.Provider value={{ info, setInfo }}>
       {children}
     </BusinessInfoContext.Provider>
-  )
-}
+  );
+};
+
+export const useBusinessInfo = () => {
+  const context = useContext(BusinessInfoContext);
+  if (!context) {
+    throw new Error("useBusinessInfo must be used within BusinessInfoProvider");
+  }
+  return context;
+};

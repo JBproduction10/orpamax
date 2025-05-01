@@ -20,17 +20,17 @@ export default function AdminBusinessForm() {
     const [loading, setLoading] = useState(false)
     const [coordinates, setCoordinates] = useState<{ lat: number, lng: number } | null>(null)
     const [geoLoading, setGeoLoading] = useState(false)
-    const { data, refresh, setData } = useBusinessInfo()
+    // const { data, refresh, setData } = useBusinessInfo()
 
-    useEffect(() => {
-        if (data) reset(data)
-      }, [data, reset])
+    // useEffect(() => {
+    //     if (data) reset(data)
+    //   }, [data, reset])
 
     useEffect(() => {
         // Fetch current business info
         const fetchData = async () => {
             try {
-                const res = await fetch('/api/business-info')
+                const res = await fetch('/api/contact-us/business-info')
                 const data = await res.json()
                 reset(data) // populate form
             } catch (error) {
@@ -66,7 +66,7 @@ export default function AdminBusinessForm() {
     const onSubmit = async (data: BusinessInfo) => {
         setLoading(true)
         try {
-            const res = await fetch('/api/business-info', {
+            const res = await fetch('/api/contact-us/business-info', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data),
@@ -74,7 +74,7 @@ export default function AdminBusinessForm() {
 
         if (!res.ok) throw new Error('Failed to update')
             const updated = await res.json()
-            setData(updated) // <-- instant update
+            // setData(updated) // <-- instant update
             alert('Business info updated!')
         } catch (err) {
             console.error(err)
