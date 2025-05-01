@@ -1,4 +1,4 @@
-
+import { BusinessInfoProvider } from '@/contexts/contact/BusinessInfoContext'
 
 export default function RootLayout({
   children,
@@ -6,10 +6,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex flex-col min-h-screen scroll-smooth">
-      <main className="flex-grow flex flex-col">
-        {children}
-      </main>
-    </div>
+    <BusinessInfoProvider>
+      <div className="flex flex-col pt-20 scroll-smooth">
+        <main className="flex-grow flex flex-col">
+          {children}
+        </main>
+      </div>
+    </BusinessInfoProvider>
   );
 }

@@ -2,32 +2,6 @@
 // The exported code uses Tailwind CSS. Install Tailwind CSS in your dev environment to ensure all styles work.
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { FaClock, FaDirections, FaEnvelope, FaFacebook, FaHeadset, FaInstagram, FaLinkedin, FaMapMarker, FaPaperPlane, FaPhone, FaPhoneAlt } from "react-icons/fa";
 import Link from "next/link";
 import ContactHero from "@/components/contact-us/contactHero";
 import ContactInfo from "@/components/contact-us/ContactInfo";
@@ -45,9 +19,7 @@ const page= () => {
     setIsMobileMenuOpen(false);
     window.scrollTo(0, 0);
   };
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
+
   
   return (
     <div className="bg-white">

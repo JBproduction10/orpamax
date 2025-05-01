@@ -1,7 +1,6 @@
-// components/AdminBusinessForm.tsx
-
 'use client'
 
+import { useBusinessInfo } from '@/contexts/contact/BusinessInfoContext'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
@@ -21,6 +20,11 @@ export default function AdminBusinessForm() {
     const [loading, setLoading] = useState(false)
     const [coordinates, setCoordinates] = useState<{ lat: number, lng: number } | null>(null)
     const [geoLoading, setGeoLoading] = useState(false)
+    const { data, refresh, setData } = useBusinessInfo()
+
+    useEffect(() => {
+        if (data) reset(data)
+      }, [data, reset])
 
     useEffect(() => {
         // Fetch current business info
@@ -69,6 +73,8 @@ export default function AdminBusinessForm() {
         })
 
         if (!res.ok) throw new Error('Failed to update')
+            const updated = await res.json()
+            setData(updated) // <-- instant update
             alert('Business info updated!')
         } catch (err) {
             console.error(err)
