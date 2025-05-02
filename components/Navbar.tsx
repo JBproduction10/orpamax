@@ -1,23 +1,19 @@
 "use client";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@radix-ui/react-select';
-import React, { useState } from 'react';
-import { Button } from './ui/button';
-import Image from 'next/image';
-import Link from 'next/link';
-import { FaBars } from 'react-icons/fa';
+
+import { useSession, signIn, signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { FaBars } from "react-icons/fa";
+import { Button } from "./ui/button";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@radix-ui/react-select";
 
 const Navbar = () => {
   const pathname = usePathname();
+  const { data: session } = useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const navLinks = [
     { href: "/", label: "Home" },
@@ -27,19 +23,16 @@ const Navbar = () => {
     { href: "/contact-us", label: "Contact Us" },
   ];
 
+  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+  const closeMobileMenu = () => setIsMobileMenuOpen(false);
+
   return (
     <header className="fixed top-0 left-0 right-0 bg-white shadow-sm z-50">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         {/* Logo */}
         <div className="flex items-center space-x-2">
           <Link href="/">
-            <Image
-              src="/orpamax/fulllogo_transparent.png"
-              alt="Company Logo"
-              width={160}
-              height={160}
-              quality={100}
-            />
+            <Image src="/orpamax/fulllogo_transparent.png" alt="Company Logo" width={160} height={160} />
           </Link>
           <Link href="/">
             <h1 className="text-xl font-bold text-blue-600">ORPAMAX</h1>
@@ -59,6 +52,26 @@ const Navbar = () => {
               {label}
             </Link>
           ))}
+
+          {/* User Dropdown */}
+          <div className="relative" onMouseEnter={() => setShowDropdown(true)} onMouseLeave={() => setShowDropdown(false)}>
+            <span className="text-gray-700 hover:text-blue-500">Account</span>
+            {showDropdown && (
+              <div className="absolute right-0 mt-0 w-40 bg-white border rounded shadow-lg z-50">
+                {session ? (
+                  <>
+                    <Link href="/profile" className="block px-4 py-2 hover:bg-gray-100">Profile</Link>
+                    <button onClick={() => signOut()} className="block w-full text-left px-4 py-2 hover:bg-gray-100">Logout</button>
+                  </>
+                ) : (
+                  <>
+                    <button onClick={() => signIn()} className="block w-full text-left px-4 py-2 hover:bg-gray-100">Login</button>
+                    <Link href="/sign-in" className="block px-4 py-2 hover:bg-gray-100">Sign Up</Link>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Language Selector + Mobile Button */}
@@ -75,12 +88,7 @@ const Navbar = () => {
               <SelectItem value="chinese">中文</SelectItem>
             </SelectContent>
           </Select>
-          <Button
-            variant="outline"
-            size="icon"
-            className="md:hidden rounded-md"
-            onClick={toggleMobileMenu}
-          >
+          <Button variant="outline" size="icon" className="md:hidden rounded-md" onClick={toggleMobileMenu}>
             <FaBars />
           </Button>
         </div>
@@ -102,6 +110,20 @@ const Navbar = () => {
                 {label}
               </Link>
             ))}
+            {/* User links in mobile */}
+            <div className="border-t mt-2 pt-2">
+              {session ? (
+                <>
+                  <Link href="/profile" onClick={closeMobileMenu} className="block px-4 py-2 hover:bg-gray-100">Profile</Link>
+                  <button onClick={() => { signOut(); closeMobileMenu(); }} className="block w-full text-left px-4 py-2 hover:bg-gray-100">Logout</button>
+                </>
+              ) : (
+                <>
+                  <button onClick={() => { signIn(); closeMobileMenu(); }} className="block w-full text-left px-4 py-2 hover:bg-gray-100">Login</button>
+                  <Link href="/sign-up" onClick={closeMobileMenu} className="block px-4 py-2 hover:bg-gray-100">Sign Up</Link>
+                </>
+              )}
+            </div>
           </div>
         </div>
       )}

@@ -20,19 +20,16 @@ type BusinessInfo = {
 const BusinessHourMap = () => {
   const [businessInfo, setBusinessInfo] = useState<BusinessInfo | null>(null)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch('/api/contact-us/business-info')
-        const data = await res.json()
-        setBusinessInfo(data)
-      } catch (err) {
-        console.error('Failed to load business info', err)
-      }
+  const fetchData = async () => {
+    try {
+      const res = await fetch('/api/contact-us/business-info');
+      const data = await res.json();
+      console.log('Fetched Business Info:', data); // Log the response
+      setBusinessInfo(data);
+    } catch (err) {
+      console.error('Failed to load business info', err);
     }
-
-    fetchData()
-  }, [])
+  };
 
   if (!businessInfo) return <p className="text-center py-20">Loading business info...</p>
 

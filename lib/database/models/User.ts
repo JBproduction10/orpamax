@@ -16,7 +16,12 @@ const UserSchema = new Schema<IUser>(
     password: String,
     image: String,
     role: { type: String, enum: ["user", "admin"], default: "user" },
-    resetCode: String,
+    resetCode: {data:String,
+      expiresAt:{
+        type: Date,
+        default: () => new Date(Date.now() + 10 * 60 * 1000), // 10 min
+      }
+    },
   },
   { timestamps: true }
 );
