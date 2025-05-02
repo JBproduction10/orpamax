@@ -7,7 +7,7 @@ type ActivateClientProps = {
   token: string
 }
 
-export default function ActivateClient({ token }: ActivateClientProps) {
+export default async function ActivateClient({ token }: ActivateClientProps) {
   const router = useRouter()
   const [message, setMessage] = useState('Activating your account...')
   const [loading, setLoading] = useState(true)
