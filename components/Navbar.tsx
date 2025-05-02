@@ -115,11 +115,11 @@ const Navbar = () => {
               {session ? (
                 <>
                   <Link href="/profile" onClick={closeMobileMenu} className="block px-4 py-2 hover:bg-gray-100">Profile</Link>
-                  <button onClick={() => { signOut(); closeMobileMenu(); }} className="block w-full text-left px-4 py-2 hover:bg-gray-100">Logout</button>
+                  <button onClick={() => { signOut({ callbackUrl: "/" }); closeMobileMenu(); }} className="block w-full text-left px-4 py-2 hover:bg-gray-100">Logout</button>
                 </>
               ) : (
                 <>
-                  <button onClick={() => { signIn(); closeMobileMenu(); }} className="block w-full text-left px-4 py-2 hover:bg-gray-100">Login</button>
+                  <button onClick={() => { signOut({ callbackUrl: "/" }); closeMobileMenu(); }} className="block w-full text-left px-4 py-2 hover:bg-gray-100">Login</button>
                   <Link href="/sign-up" onClick={closeMobileMenu} className="block px-4 py-2 hover:bg-gray-100">Sign Up</Link>
                 </>
               )}

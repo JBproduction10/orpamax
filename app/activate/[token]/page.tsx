@@ -1,9 +1,11 @@
-'use client'
-
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-export default function Activate({ params }: { params: { token: string } }) {
+interface ActivatePageProps {
+  params: { token: string }
+}
+
+export default function Activate({ params }: ActivatePageProps) {
   const router = useRouter()
   const [message, setMessage] = useState('Activating your account...')
 
