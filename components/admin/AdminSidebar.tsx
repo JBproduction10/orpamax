@@ -53,8 +53,22 @@ const Sidebar = () => {
           <li className="mb-6">
             <Link href="/products" className="text-white hover:text-blue-400">Products</Link>
           </li>
+        
           <li className="mb-6">
-            <Link href="/admin/dashboard/contact-us" className="text-white hover:text-blue-400">Contact Us</Link>
+            <button
+                onClick={() => setIsSettingsOpen(prev => !prev)}
+                className="w-full text-left text-white hover:text-blue-400 focus:outline-none"
+              >
+                Edit Contact Section {isSettingsOpen ? '▲' : '▼'}
+              </button>
+              {isSettingsOpen && (
+                <ul className="mt-2 ml-4 space-y-2">
+                  <li>
+                    <Link href="/admin/dashboard/contact-us" className="text-white hover:text-blue-400">Contact Us</Link>
+                  </li>
+                </ul>
+              )}
+            
           </li>
           <li className="mb-2">
             <button
