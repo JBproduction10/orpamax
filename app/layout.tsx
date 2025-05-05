@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Afacad, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar";
+// import Footer from "@/components/Footer";
+// import Navbar from "@/components/Navbar";
 import SessionProviderWrapper from "./providers/SessionProviderWrapper";
 
 const geistSans = Geist({
@@ -29,9 +29,9 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <SessionProviderWrapper>
-          <Navbar/>
+          {/* <Navbar/> */}
           {children}
-          <Footer/>
+          {/* <Footer/> */}
         </SessionProviderWrapper>
       </body>
     </html>

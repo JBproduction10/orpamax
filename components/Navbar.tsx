@@ -2,19 +2,34 @@
 
 import { useSession, signIn, signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { FaBars } from "react-icons/fa";
 import { Button } from "./ui/button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@radix-ui/react-select";
+import { useRouter } from "next/navigation";
+
 
 const Navbar = () => {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const router = useRouter();
 
+  useEffect(() => {
+    if (session?.user) {
+      if (pathname === '/sign-in' || pathname === '/login') {
+        if (session.user.role === 'admin') {
+          router.replace('/admin/dashboard');
+        } else {
+          router.replace('/profile');
+        }
+      }
+    }
+  }, [session, pathname, router]);
+  
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/translation-services", label: "Translation Services" },

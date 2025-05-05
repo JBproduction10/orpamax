@@ -1,9 +1,31 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from './ui/button';
 import Image from 'next/image';
+import { FaClock, FaEnvelope, FaMapMarkerAlt, FaPhoneAlt } from 'react-icons/fa';
 
 const Footer = () => {
+  const [footer, setFooter] = useState({
+    companyName: "", 
+    logo: "",
+    businessHour: "",
+    location: '',
+    description: '',
+    email: ''
+  });
+  const [existingContent, setExistingContent] = useState(null);
+
+  useEffect(() => {
+    fetch("/api/home/footer")
+      .then(res => res.json())
+      .then(data => {
+        if(data){
+          setFooter(data);
+          setExistingContent(data);
+        }
+      })
+  }, []);
+
   return (
     <footer className="bg-gray-900 text-white">
         <div className="container mx-auto px-4 py-12">
@@ -17,11 +39,11 @@ const Footer = () => {
                   height={200}
                   quality={100}
                 />
-                <h3 className="text-xl font-bold">ORPAMAX</h3>
+
+                <h3 className="text-xl font-bold">{footer.companyName}</h3>
               </div>
               <p className="text-blue-200 mb-4">
-                Professional translation and cleaning services for homes and
-                businesses across the country.
+                {footer.description}
               </p>
               <div className="flex space-x-4">
                 <a
@@ -160,24 +182,22 @@ const Footer = () => {
               <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
               <ul className="space-y-2">
                 <li className="flex items-start">
-                  <i className="fas fa-map-marker-alt mt-1 mr-2 text-blue-300"></i>
+                  <FaMapMarkerAlt className="fas fa-map-marker-alt mt-1 mr-2 text-blue-300"/>
                   <span>
-                    Portland
-                    <br />
-                    Maine,
+                    {footer.location}
                   </span>
                 </li>
-                <li className="flex items-center">
-                  <i className="fas fa-phone-alt mr-2 text-blue-300"></i>
+                {/* <li className="flex items-center">
+                  <FaPhoneAlt className="fas fa-phone-alt mr-2 text-blue-300"/>
                   <span></span>
+                </li> */}
+                <li className="flex items-center">
+                  <FaEnvelope className="fas fa-envelope mr-2 text-blue-300"/>
+                  <span>{footer.email}</span>
                 </li>
                 <li className="flex items-center">
-                  <i className="fas fa-envelope mr-2 text-blue-300"></i>
-                  <span>info@orpamax.org</span>
-                </li>
-                <li className="flex items-center">
-                  <i className="fas fa-clock mr-2 text-blue-300"></i>
-                  <span>Mon-Fri: 8:00 AM - 6:00 PM</span>
+                  <FaClock className="fas fa-clock mr-2 text-blue-300"/>
+                  <span>{footer.businessHour}</span>
                 </li>
               </ul>
             </div>
@@ -185,7 +205,7 @@ const Footer = () => {
           <div className="mt-12 pt-8 border-t border-blue-800">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <p className="text-blue-300 mb-4 md:mb-0">
-                &copy; {new Date().getFullYear()} ORPAMAX LLC. All rights reserved.
+                &copy; {new Date().getFullYear()} {footer.companyName} LLC. All rights reserved.
               </p>
               <div className="flex space-x-6">
                 <a

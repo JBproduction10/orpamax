@@ -1,4 +1,6 @@
 import { BusinessInfoProvider } from '@/contexts/contact/BusinessInfoContext'
+import Sidebar from '@/components/admin/AdminSidebar';
+import Header from '@/components/admin/AdminHeader';
 
 export default function RootLayout({
   children,
@@ -7,10 +9,14 @@ export default function RootLayout({
 }>) {
   return (
     
-    <div className="flex flex-col pt-20 scroll-smooth">
-      <main className="flex-grow flex flex-col">
-        {children}
-      </main>
+    <div className="flex">
+      <Sidebar />
+      <div className="flex-1">
+        <Header />
+        <div className="p-8">
+          {children}
+        </div>
+      </div>
     </div>
   );
 }
