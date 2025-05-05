@@ -1,11 +1,5 @@
 import ActivateClient from './ActivateClient';
 
-type PageProps = {
-  params: {
-    token: string;
-  };
-};
-
-export default function ActivatePage({ params }: PageProps) {
+export default function ActivatePage({ params }: { params: { token: string } }) {
   return <ActivateClient token={params.token} />;
 }
