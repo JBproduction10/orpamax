@@ -1,12 +1,12 @@
-import { connectToDatabase } from "@/lib/database/mongodb";
+import { connectToDatabase } from "@/lib/database/mongodb"; 
 import HomeHero from "@/lib/database/models/HomeHero";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest) {
   await connectToDatabase();
 
   let hero = await HomeHero.findOne();
-  
+
   // If no hero exists, create one with defaults
   if (!hero) {
     hero = new HomeHero(); // uses schema defaults
@@ -16,7 +16,7 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
   return NextResponse.json(hero);
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   await connectToDatabase();
 
   const { title, description, image } = await req.json();
