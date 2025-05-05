@@ -1,5 +1,6 @@
 import ActivateClient from './ActivateClient';
 
-export default function ActivatePage({ params }: { params: { token: string } }) {
-  return <ActivateClient token={params.token} />;
+type Params = Promise<{token: string}>
+export default function ActivatePage(props: {params: Params}) {
+  return <ActivateClient token={props.params} />;
 }

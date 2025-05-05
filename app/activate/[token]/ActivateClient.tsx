@@ -1,16 +1,18 @@
 'use client';
 
+import { use } from 'react';
+
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-type ActivateClientProps = {
-  token: string;
-};
+type ActivateClientProps = Promise<{token: string}>
 
-export default function ActivateClient({ token }: ActivateClientProps) {
+export default function ActivateClient(props: {token: ActivateClientProps}) {
   const router = useRouter();
   const [message, setMessage] = useState('Activating your account...');
   const [loading, setLoading] = useState(true);
+  const params = use(props.token);
+  const token = params.token;
 
   useEffect(() => {
     const activate = async () => {

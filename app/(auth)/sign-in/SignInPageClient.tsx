@@ -19,7 +19,7 @@ import Link from "next/link";
 import { signIn } from "next-auth/react";
 import axios from "axios";
 import * as Yup from "yup";
-import { Formik, Form } from "formik";
+import { Formik, Form, ErrorMessage } from "formik";
 
 // Initial state for form values
 const initialValues = {
@@ -82,17 +82,17 @@ const SignInPageClient = () => {
       .max(36, "Password can't be more than 36 characters."),
   });
 
-  const signUpHandler = async () => {
+  const signUpHandler = async (values: { name: string; email: string; password: string }) => {
     try {
       setLoading(true);
-      const { data } = await axios.post("/api/auth/sign-up", { name, email, password });
+      const { data } = await axios.post("/api/auth/sign-up", values);
       setUser({ ...user, error: "", success: data.message });
       setLoading(false);
       setTimeout(async () => {
         const res = await signIn("credentials", {
           redirect: false,
-          email,
-          password,
+          email: values.email,
+          password: values.password,
         });
         router.push("/");
       }, 2000);
@@ -102,12 +102,12 @@ const SignInPageClient = () => {
     }
   };
 
-  const signInHandler = async () => {
+  const signInHandler = async (values: { login_email: string; login_password: string }) => {
     setLoading(true);
     const res = await signIn("credentials", {
       redirect: false,
-      email: login_email,
-      password: login_password,
+      email: values.login_email,
+      password: values.login_password,
     });
     setLoading(false);
     if (res?.error) {
@@ -142,42 +142,47 @@ const SignInPageClient = () => {
                   enableReinitialize
                   initialValues={{ login_email, login_password }}
                   validationSchema={loginValidation}
-                  onSubmit={() => signInHandler()}
+                  onSubmit={signInHandler}
                 >
-                  <Form method="post">
-                    <div className="space-y-4">
-                      <div className="relative">
-                        <Input
-                          type="text"
-                          name="login_email"
-                          placeholder="Email Address"
-                          className="pl-10 py-6 bg-gray-50 border-none text-sm"
-                          onChange={handleChange}
-                        />
-                        <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  {({ errors, touched, handleChange }) => (
+                    <Form method="post">
+                      <div className="space-y-4">
+                        <div className="relative">
+                          <Input
+                            type="text"
+                            name="login_email"
+                            placeholder="Email Address"
+                            className="pl-10 py-6 bg-gray-50 border-none text-sm"
+                            onChange={handleChange}
+                          />
+                          <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                          <ErrorMessage name="login_email" component="div" className="text-red-600 text-sm mt-1" />
+                        </div>
+                        <div className="relative">
+                          <Input
+                            type="password"
+                            name="login_password"
+                            placeholder="Password"
+                            className="pl-10 py-6 bg-gray-50 border-none text-sm"
+                            onChange={handleChange}
+                          />
+                          <FaKey className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                          <ErrorMessage name="login_password" component="div" className="text-red-600 text-sm mt-1" />
+                        </div>
+                        {login_error && <span className="text-red-700">{login_error}</span>}
+                        <Button className="w-full py-6 !rounded-button bg-blue-500 hover:bg-blue-600" type="submit">
+                          Sign in <FaArrowRight className="ml-2" />
+                        </Button>
+                        <div className="text-center">
+                          <Link href="/auth/forgot-password" className="text-blue-500 hover:underline text-sm">
+                            Forgot password?
+                          </Link>
+                        </div>
                       </div>
-                      <div className="relative">
-                        <Input
-                          type="password"
-                          name="login_password"
-                          placeholder="Password"
-                          className="pl-10 py-6 bg-gray-50 border-none text-sm"
-                          onChange={handleChange}
-                        />
-                        <FaKey className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                      </div>
-                      {login_error && <span className="text-red-700">{login_error}</span>}
-                      <Button className="w-full py-6 !rounded-button bg-blue-500 hover:bg-blue-600" type="submit">
-                        Sign in <FaArrowRight className="ml-2" />
-                      </Button>
-                      <div className="text-center">
-                        <Link href="/auth/forgot-password" className="text-blue-500 hover:underline text-sm">
-                          Forgot password?
-                        </Link>
-                      </div>
-                    </div>
-                  </Form>
+                    </Form>
+                  )}
                 </Formik>
+
 
                 <div className="flex items-center my-6">
                   <Separator className="flex-grow" />
@@ -207,38 +212,44 @@ const SignInPageClient = () => {
                   enableReinitialize
                   initialValues={{ name, email, password }}
                   validationSchema={registerValidation}
-                  onSubmit={() => signUpHandler()}
+                  onSubmit={signUpHandler}
                 >
-                  <Form>
-                    <div className="space-y-4">
-                      <div className="relative">
-                        <Input type="text" name="name" placeholder="Full Name" onChange={handleChange}
-                          className="pl-10 py-6 bg-gray-50 border-none text-sm" />
-                        <FaUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  {({ errors, touched, handleChange }) => (
+                     <Form>
+                      <div className="space-y-4">
+                        <div className="relative">
+                          <Input type="text" name="name" placeholder="Full Name" onChange={handleChange}
+                            className="pl-10 py-6 bg-gray-50 border-none text-sm" />
+                          <FaUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                          <ErrorMessage name="name" component="div" className="text-red-600 text-sm mt-1" />
+                        </div>
+                        <div className="relative">
+                          <Input type="text" name="email" placeholder="Email" onChange={handleChange}
+                            className="pl-10 py-6 bg-gray-50 border-none text-sm" />
+                          <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                          <ErrorMessage name="email" component="div" className="text-red-600 text-sm mt-1" />
+                        </div>
+                        <div className="relative">
+                          <Input type="password" name="password" placeholder="Password" onChange={handleChange}
+                            className="pl-10 py-6 bg-gray-50 border-none text-sm" />
+                          <FaKey className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                          <ErrorMessage name="password" component="div" className="text-red-600 text-sm mt-1" />
+                        </div>
+                        <Button type="submit" className="w-full py-6 !rounded-button bg-blue-500 hover:bg-blue-600">
+                          Sign up <FaArrowRight className="ml-2" />
+                        </Button>
+                        <div className="text-center text-sm text-gray-500 mt-4">
+                          By signing up, you agree to our{" "}
+                          <Link href="/terms-of-service" className="text-blue-500 hover:underline">Terms</Link> and{" "}
+                          <Link href="/privacy-policy" className="text-blue-500 hover:underline">Privacy Policy</Link>
+                        </div>
                       </div>
-                      <div className="relative">
-                        <Input type="text" name="email" placeholder="Email" onChange={handleChange}
-                          className="pl-10 py-6 bg-gray-50 border-none text-sm" />
-                        <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                      </div>
-                      <div className="relative">
-                        <Input type="password" name="password" placeholder="Password" onChange={handleChange}
-                          className="pl-10 py-6 bg-gray-50 border-none text-sm" />
-                        <FaKey className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                      </div>
-                      <Button type="submit" className="w-full py-6 !rounded-button bg-blue-500 hover:bg-blue-600">
-                        Sign up <FaArrowRight className="ml-2" />
-                      </Button>
-                      <div className="text-center text-sm text-gray-500 mt-4">
-                        By signing up, you agree to our{" "}
-                        <Link href="/terms-of-service" className="text-blue-500 hover:underline">Terms</Link> and{" "}
-                        <Link href="/privacy-policy" className="text-blue-500 hover:underline">Privacy Policy</Link>
-                      </div>
-                    </div>
-                  </Form>
+                    </Form>
+                  )}
                 </Formik>
                 {success && <div className="text-green-600 mt-2">{success}</div>}
                 {error && <div className="text-red-600 mt-2">{error}</div>}
+
               </div>
             </div>
           )}
