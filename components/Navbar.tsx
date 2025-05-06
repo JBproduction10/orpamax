@@ -24,7 +24,7 @@ const Navbar = () => {
         if (session.user.role === 'admin') {
           router.replace('/admin/dashboard');
         } else {
-          router.replace('/profile');
+          router.replace('/');
         }
       }
     }
