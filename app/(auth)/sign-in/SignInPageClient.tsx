@@ -20,6 +20,7 @@ import { signIn } from "next-auth/react";
 import axios from "axios";
 import * as Yup from "yup";
 import { Formik, Form, ErrorMessage } from "formik";
+import { toast } from "sonner";
 
 // Initial state for form values
 const initialValues = {
@@ -48,7 +49,16 @@ const useIsMobile = () => {
 const SignInPageClient = () => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(initialValues);
-  const { login_email, login_password, name, email, password, success, error, login_error } = user;
+  const {
+    login_email,
+    login_password,
+    name,
+    email,
+    password,
+    success,
+    error,
+    login_error,
+  } = user;
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
@@ -87,7 +97,10 @@ const SignInPageClient = () => {
       setLoading(true);
       const { data } = await axios.post("/api/auth/sign-up", values);
       setUser({ ...user, error: "", success: data.message });
+      toast.success(data.message || "Registration successful!");
+      toast.success(data.message || "A verification email was sent to your email. Please verify your account!");
       setLoading(false);
+
       setTimeout(async () => {
         const res = await signIn("credentials", {
           redirect: false,
@@ -96,9 +109,11 @@ const SignInPageClient = () => {
         });
         router.push("/");
       }, 2000);
-    } catch (error) {
+    } catch (error: any) {
       setLoading(false);
-      setUser({ ...user, success: "", error: "Something went wrong" });
+      const errMsg = error?.response?.data?.message || "Something went wrong during registration.";
+      setUser({ ...user, success: "", error: errMsg });
+      toast.error(errMsg);
     }
   };
 
@@ -112,7 +127,9 @@ const SignInPageClient = () => {
     setLoading(false);
     if (res?.error) {
       setUser({ ...user, login_error: res.error });
+      toast.error(res.error);
     } else {
+      toast.success("Signed in successfully!");
       router.push(callbackUrl || "/");
     }
   };
@@ -127,7 +144,9 @@ const SignInPageClient = () => {
           <div className="ml-4">
             <p className="text-gray-800 font-medium">
               We'd be happy to have you onboard!{" "}
-              <Link href="/" className="text-blue-500 hover:underline">Go Home</Link>
+              <Link href="/" className="text-blue-500 hover:underline">
+                Go Home
+              </Link>
             </p>
           </div>
         </div>
@@ -183,7 +202,6 @@ const SignInPageClient = () => {
                   )}
                 </Formik>
 
-
                 <div className="flex items-center my-6">
                   <Separator className="flex-grow" />
                   <span className="px-4 text-sm text-gray-500">Or continue with</span>
@@ -215,23 +233,38 @@ const SignInPageClient = () => {
                   onSubmit={signUpHandler}
                 >
                   {({ errors, touched, handleChange }) => (
-                     <Form>
+                    <Form>
                       <div className="space-y-4">
                         <div className="relative">
-                          <Input type="text" name="name" placeholder="Full Name" onChange={handleChange}
-                            className="pl-10 py-6 bg-gray-50 border-none text-sm" />
+                          <Input
+                            type="text"
+                            name="name"
+                            placeholder="Full Name"
+                            onChange={handleChange}
+                            className="pl-10 py-6 bg-gray-50 border-none text-sm"
+                          />
                           <FaUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                           <ErrorMessage name="name" component="div" className="text-red-600 text-sm mt-1" />
                         </div>
                         <div className="relative">
-                          <Input type="text" name="email" placeholder="Email" onChange={handleChange}
-                            className="pl-10 py-6 bg-gray-50 border-none text-sm" />
+                          <Input
+                            type="text"
+                            name="email"
+                            placeholder="Email"
+                            onChange={handleChange}
+                            className="pl-10 py-6 bg-gray-50 border-none text-sm"
+                          />
                           <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                           <ErrorMessage name="email" component="div" className="text-red-600 text-sm mt-1" />
                         </div>
                         <div className="relative">
-                          <Input type="password" name="password" placeholder="Password" onChange={handleChange}
-                            className="pl-10 py-6 bg-gray-50 border-none text-sm" />
+                          <Input
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                            onChange={handleChange}
+                            className="pl-10 py-6 bg-gray-50 border-none text-sm"
+                          />
                           <FaKey className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                           <ErrorMessage name="password" component="div" className="text-red-600 text-sm mt-1" />
                         </div>
@@ -249,7 +282,6 @@ const SignInPageClient = () => {
                 </Formik>
                 {success && <div className="text-green-600 mt-2">{success}</div>}
                 {error && <div className="text-red-600 mt-2">{error}</div>}
-
               </div>
             </div>
           )}
