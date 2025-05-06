@@ -1,465 +1,281 @@
-"use client"
-import { useState } from 'react'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { cn } from '@/lib/utils'
-import { Popover, PopoverTrigger, PopoverContent } from '@radix-ui/react-popover'
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem, Separator } from '@radix-ui/react-select'
-import { Tabs, TabsList, TabsTrigger } from '@radix-ui/react-tabs'
-import { Calendar } from "@/components/ui/calendar";
+"use client";
+import { useState } from 'react';
+import {
+  Card, CardHeader, CardTitle, CardDescription,
+  CardContent, CardFooter
+} from '@/components/ui/card';
+import { Separator } from '@radix-ui/react-select';
+import { Tabs, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
 import { format } from "date-fns";
-import React from 'react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/button';
+import { FaBroom, FaCloudUploadAlt, FaLanguage } from 'react-icons/fa';
+import TranslationQuote from '@/components/quote/TranslationQuote';
+import CleaningQuote from '@/components/quote/CleaningQuote';
+import QuoteContactForm from '@/components/quote/QuoteContactForm';
+import { toast } from "sonner"; // ✅ import toast
 
-const page = () => {
-    const [serviceType, setServiceType] = useState("translation");
-    const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-    const [languageTo, setLanguageTo] = useState("spanish");
-    const [languageFrom, setLanguageFrom] = useState("english");
-    return (
-        <>
-            <div className="container mx-auto px-4 py-48 shadow-2xl bg-gray-100">
-                <div className="text-center mb-12">
-                    <h2 className="text-3xl font-bold mb-4">Request a Quote</h2>
-                    <p className="text-gray-600 max-w-2xl mx-auto">
-                        Fill out the form below to get a personalized quote for our
-                        services.
-                    </p>
+const Page = () => {
+  const [resetKey, setResetKey] = useState(0);
+
+  const [serviceType, setServiceType] = useState("translation");
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [languageTo, setLanguageTo] = useState("");
+  const [languageFrom, setLanguageFrom] = useState("");
+  const [documentType, setDocumentType] = useState("general");
+  const [urgency, setUrgency] = useState("standard");
+  const [wordCount, setWordCount] = useState("");
+  const [cleaningType, setCleaningType] = useState("standard");
+  const [propertyType, setPropertyType] = useState("residential");
+  const [squareFootage, setSquareFootage] = useState("");
+  const [bedrooms, setBedrooms] = useState("2");
+  const [bathrooms, setBathrooms] = useState("2");
+  const [frequency, setFrequency] = useState("onetime");
+  const [preferredTime, setPreferredTime] = useState("morning");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [company, setCompany] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [zip, setZip] = useState("");
+  const [message, setMessage] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    const formData = new FormData();
+    formData.append("serviceType", serviceType);
+    formData.append("selectedDate", selectedDate ? format(selectedDate, "PPP") : "Not specified");
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
+    formData.append("email", email);
+    formData.append("phone", phone);
+    formData.append("company", company);
+    formData.append("address", address);
+    formData.append("city", city);
+    formData.append("state", state);
+    formData.append("zip", zip);
+    formData.append("message", message);
+
+    if (serviceType === 'translation') {
+      formData.append("languageFrom", languageFrom);
+      formData.append("languageTo", languageTo);
+      formData.append("documentType", documentType);
+      formData.append("urgency", urgency);
+      formData.append("wordCount", wordCount);
+      if (file) formData.append("file", file);
+    } else {
+      formData.append("cleaningType", cleaningType);
+      formData.append("propertyType", propertyType);
+      formData.append("squareFootage", squareFootage);
+      formData.append("bedrooms", bedrooms);
+      formData.append("bathrooms", bathrooms);
+      formData.append("frequency", frequency);
+      formData.append("preferredTime", preferredTime);
+    }
+
+    try {
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error('Failed to send email');
+
+      toast.success("Quote request submitted successfully!");
+
+      // Reset form states
+      setResetKey(prev => prev + 1);
+      setServiceType("translation");
+      setSelectedDate(undefined);
+      setLanguageTo("");
+      setLanguageFrom("");
+      setDocumentType("general");
+      setUrgency("standard");
+      setWordCount("");
+      setCleaningType("standard");
+      setPropertyType("residential");
+      setSquareFootage("");
+      setBedrooms("2");
+      setBathrooms("2");
+      setFrequency("onetime");
+      setPreferredTime("morning");
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPhone("");
+      setCompany("");
+      setAddress("");
+      setCity("");
+      setState("");
+      setZip("");
+      setMessage("");
+      setFile(null);
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error("Failed to submit quote request. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="container mx-auto px-4 py-48 shadow-2xl bg-gray-100">
+      <div className="text-center mb-12">
+        <h2 className="text-3xl font-bold mb-4">Request a Quote</h2>
+        <p className="text-gray-600 max-w-2xl mx-auto">
+          Fill out the form below to get a personalized quote for our services.
+        </p>
+      </div>
+      <div className="max-w-3xl mx-auto">
+        <Card className="border-2 border-blue-100">
+          <CardHeader>
+            <CardTitle>Service Quote Request</CardTitle>
+            <CardDescription>
+              Please provide details about the service you need
+            </CardDescription>
+          </CardHeader>
+          <form onSubmit={handleSubmit}>
+            <CardContent>
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <label htmlFor="serviceType">Service Type</label>
+                  <Tabs
+                    value={serviceType}
+                    onValueChange={setServiceType}
+                    className="w-full"
+                  >
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="translation" className="rounded whitespace-nowrap">
+                        <FaLanguage className="mr-2" />
+                        Translation Services
+                      </TabsTrigger>
+                      <TabsTrigger value="cleaning" className="rounded whitespace-nowrap">
+                        <FaBroom className="mr-2" />
+                        Cleaning Services
+                      </TabsTrigger>
+                    </TabsList>
+                  </Tabs>
                 </div>
-                <div className="max-w-3xl mx-auto">
-                    <Card className="border-2 border-blue-100">
-                        <CardHeader>
-                        <CardTitle>Service Quote Request</CardTitle>
-                        <CardDescription>
-                            Please provide details about the service you need
-                        </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                        <div className="space-y-6">
-                            <div className="space-y-2">
-                                <label htmlFor="serviceType">Service Type</label>
-                                <Tabs
-                                    defaultValue={serviceType}
-                                    onValueChange={setServiceType}
-                                    className="w-full"
-                                >
-                                    <TabsList className="grid w-full grid-cols-2">
-                                        <TabsTrigger
-                                            value="translation"
-                                            className="!rounded-button whitespace-nowrap"
-                                        >
-                                            <i className="fas fa-language mr-2"></i>
-                                            Translation Services
-                                        </TabsTrigger>
-                                        <TabsTrigger
-                                            value="cleaning"
-                                            className="!rounded-button whitespace-nowrap"
-                                        >
-                                            <i className="fas fa-broom mr-2"></i>
-                                            Cleaning Services
-                                        </TabsTrigger>
-                                    </TabsList>
-                                </Tabs>
-                            </div>
-                            {serviceType === "translation" ? (
-                            <div className="space-y-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <label htmlFor="languageFrom">
-                                        From Language
-                                        </label>
-                                        <Select
-                                        value={languageFrom}
-                                        onValueChange={setLanguageFrom}
-                                        >
-                                        <SelectTrigger className="!rounded-button">
-                                            <SelectValue placeholder="Select language" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="english">
-                                            English
-                                            </SelectItem>
-                                            <SelectItem value="spanish">
-                                            Spanish
-                                            </SelectItem>
-                                            <SelectItem value="french">French</SelectItem>
-                                            <SelectItem value="german">German</SelectItem>
-                                            <SelectItem value="chinese">
-                                            Chinese
-                                            </SelectItem>
-                                        </SelectContent>
-                                        </Select>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label htmlFor="languageTo">To Language</label>
-                                        <Select
-                                        value={languageTo}
-                                        onValueChange={setLanguageTo}
-                                        >
-                                        <SelectTrigger className="!rounded-button">
-                                            <SelectValue placeholder="Select language" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="english">
-                                            English
-                                            </SelectItem>
-                                            <SelectItem value="spanish">
-                                            Spanish
-                                            </SelectItem>
-                                            <SelectItem value="french">French</SelectItem>
-                                            <SelectItem value="german">German</SelectItem>
-                                            <SelectItem value="chinese">
-                                            Chinese
-                                            </SelectItem>
-                                        </SelectContent>
-                                        </Select>
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <label htmlFor="documentType">Document Type</label>
-                                    <Select defaultValue="general">
-                                        <SelectTrigger className="!rounded-button">
-                                        <SelectValue placeholder="Select document type" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                        <SelectItem value="general">
-                                            General Document
-                                        </SelectItem>
-                                        <SelectItem value="technical">
-                                            Technical Document
-                                        </SelectItem>
-                                        <SelectItem value="legal">
-                                            Legal Document
-                                        </SelectItem>
-                                        <SelectItem value="medical">
-                                            Medical Document
-                                        </SelectItem>
-                                        <SelectItem value="website">
-                                            Website Content
-                                        </SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="space-y-2">
-                                <label htmlFor="wordCount">
-                                    Word Count (Approximate)
-                                </label>
-                                <Input
-                                    type="number"
-                                    id="wordCount"
-                                    placeholder="Enter number of words"
-                                    className="!rounded-button"
-                                />
-                                </div>
-                                <div className="space-y-2">
-                                <label htmlFor="urgency">Delivery Time</label>
-                                <Select defaultValue="standard">
-                                    <SelectTrigger className="!rounded-button">
-                                    <SelectValue placeholder="Select urgency" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                    <SelectItem value="standard">
-                                        Standard (3-5 business days)
-                                    </SelectItem>
-                                    <SelectItem value="express">
-                                        Express (1-2 business days)
-                                    </SelectItem>
-                                    <SelectItem value="urgent">
-                                        Urgent (24 hours)
-                                    </SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                </div>
-                                <div className="space-y-2">
-                                <label htmlFor="fileUpload">
-                                    Upload Document (Optional)
-                                </label>
-                                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:bg-gray-50 transition-colors">
-                                    <i className="fas fa-cloud-upload-alt text-blue-500 text-3xl mb-2"></i>
-                                    <p className="text-gray-500 mb-1">
-                                    Drag and drop your file here, or click to browse
-                                    </p>
-                                    <p className="text-xs text-gray-400">
-                                    Supports PDF, DOCX, XLSX, PPTX (Max 20MB)
-                                    </p>
-                                </div>
-                                </div>
-                            </div>
-                            ) : (
-                                <div className="space-y-6">
-                                    <div className="space-y-2">
-                                        <label htmlFor="cleaningType">Cleaning Type</label>
-                                        <Select defaultValue="standard">
-                                            <SelectTrigger className="!rounded-button">
-                                                <SelectValue placeholder="Select cleaning type" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="standard">
-                                                    Standard Clean
-                                                </SelectItem>
-                                                <SelectItem value="deep">Deep Clean</SelectItem>
-                                                <SelectItem value="move">
-                                                    Move-In/Out Clean
-                                                </SelectItem>
-                                                <SelectItem value="office">
-                                                    Office Clean
-                                                </SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label htmlFor="propertyType">Property Type</label>
-                                        <Select defaultValue="residential">
-                                            <SelectTrigger className="!rounded-button">
-                                                <SelectValue placeholder="Select property type" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                            <SelectItem value="residential">
-                                                Residential Home
-                                            </SelectItem>
-                                            <SelectItem value="apartment">
-                                                Apartment
-                                            </SelectItem>
-                                            <SelectItem value="office">
-                                                Office Space
-                                            </SelectItem>
-                                            <SelectItem value="commercial">
-                                                Commercial Property
-                                            </SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div className="space-y-2">
-                                            <label htmlFor="squareFootage">
-                                            Square Footage
-                                            </label>
-                                            <Input
-                                            type="number"
-                                            id="squareFootage"
-                                            placeholder="Approximate square feet"
-                                            className="!rounded-button"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label htmlFor="bedrooms">Bedrooms/Offices</label>
-                                            <Select defaultValue="2">
-                                            <SelectTrigger className="!rounded-button">
-                                                <SelectValue placeholder="Select number" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="1">1</SelectItem>
-                                                <SelectItem value="2">2</SelectItem>
-                                                <SelectItem value="3">3</SelectItem>
-                                                <SelectItem value="4">4</SelectItem>
-                                                <SelectItem value="5+">5+</SelectItem>
-                                            </SelectContent>
-                                            </Select>
-                                        </div>
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div className="space-y-2">
-                                            <label htmlFor="bathrooms">Bathrooms</label>
-                                            <Select defaultValue="2">
-                                            <SelectTrigger className="!rounded-button">
-                                                <SelectValue placeholder="Select number" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="1">1</SelectItem>
-                                                <SelectItem value="2">2</SelectItem>
-                                                <SelectItem value="3">3</SelectItem>
-                                                <SelectItem value="4">4</SelectItem>
-                                                <SelectItem value="5+">5+</SelectItem>
-                                            </SelectContent>
-                                            </Select>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label htmlFor="frequency">
-                                                Service Frequency
-                                            </label>
-                                            <Select defaultValue="onetime">
-                                                <SelectTrigger className="!rounded-button">
-                                                    <SelectValue placeholder="Select frequency" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="onetime">
-                                                    One-time Service
-                                                    </SelectItem>
-                                                    <SelectItem value="weekly">Weekly</SelectItem>
-                                                    <SelectItem value="biweekly">
-                                                    Bi-weekly
-                                                    </SelectItem>
-                                                    <SelectItem value="monthly">
-                                                    Monthly
-                                                    </SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label>Preferred Date and Time</label>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <Button
-                                                        variant="outline"
-                                                        className={cn(
-                                                            "w-full justify-start text-left font-normal rounded whitespace-nowrap",
-                                                            !selectedDate && "text-muted-foreground"
-                                                        )}
-                                                    >
-                                                        {/* <Calendar className="mr-2 h-4 w-4" /> */}
-                                                        {selectedDate ? format(selectedDate, "PPP") : "Select a date"}
-                                                    </Button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0 bg-white border rounded-lg shadow-lg z-50">
-                                                    <Calendar
-                                                        mode="single"
-                                                        selected={selectedDate}
-                                                        onSelect={setSelectedDate}
-                                                        initialFocus
-                                                        />
-                                                </PopoverContent>
-                                            </Popover>
-                                            <Select defaultValue="morning">
-                                            <SelectTrigger className="!rounded-button">
-                                                <SelectValue placeholder="Select time" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="morning">
-                                                Morning (8:00 AM - 12:00 PM)
-                                                </SelectItem>
-                                                <SelectItem value="afternoon">
-                                                Afternoon (12:00 PM - 4:00 PM)
-                                                </SelectItem>
-                                                <SelectItem value="evening">
-                                                Evening (4:00 PM - 8:00 PM)
-                                                </SelectItem>
-                                            </SelectContent>
-                                            </Select>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-                            <Separator />
-                            <div className="space-y-6">
-                            <h3 className="text-lg font-medium">
-                                Contact Information
-                            </h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                <label htmlFor="firstName">First Name</label>
-                                <Input
-                                    id="firstName"
-                                    placeholder="Enter your first name"
-                                    className="!rounded-button"
-                                />
-                                </div>
-                                <div className="space-y-2">
-                                <label htmlFor="lastName">Last Name</label>
-                                <Input
-                                    id="lastName"
-                                    placeholder="Enter your last name"
-                                    className="!rounded-button"
-                                />
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                <label htmlFor="email">Email</label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    placeholder="Enter your email address"
-                                    className="!rounded-button"
-                                />
-                                </div>
-                                <div className="space-y-2">
-                                <label htmlFor="phone">Phone</label>
-                                <Input
-                                    id="phone"
-                                    placeholder="Enter your phone number"
-                                    className="!rounded-button"
-                                />
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="company">Company (Optional)</label>
-                                <Input
-                                id="company"
-                                placeholder="Enter your company name"
-                                className="!rounded-button"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="address">Address</label>
-                                <Input
-                                id="address"
-                                placeholder="Enter your address"
-                                className="!rounded-button"
-                                />
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div className="space-y-2">
-                                <label htmlFor="city">City</label>
-                                <Input
-                                    id="city"
-                                    placeholder="City"
-                                    className="!rounded-button"
-                                />
-                                </div>
-                                <div className="space-y-2">
-                                <label htmlFor="state">State/Province</label>
-                                <Input
-                                    id="state"
-                                    placeholder="State/Province"
-                                    className="!rounded-button"
-                                />
-                                </div>
-                                <div className="space-y-2">
-                                <label htmlFor="zip">Zip/Postal Code</label>
-                                <Input
-                                    id="zip"
-                                    placeholder="Zip/Postal Code"
-                                    className="!rounded-button"
-                                />
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="message">
-                                Additional Information
-                                </label>
-                                <Textarea
-                                id="message"
-                                placeholder="Any specific requirements or questions"
-                                className="min-h-[100px] !rounded-button"
-                                />
-                            </div>
-                            </div>
-                        </div>
-                        </CardContent>
-                        <CardFooter className="flex flex-col space-y-4">
-                        <Button className="w-full !rounded-button whitespace-nowrap">
-                            Submit Quote Request
-                        </Button>
-                        <p className="text-xs text-gray-500 text-center">
-                            By submitting this form, you agree to our{" "}
-                            <a href="#" className="text-blue-600 hover:underline">
-                            Terms of Service
-                            </a>{" "}
-                            and{" "}
-                            <a href="#" className="text-blue-600 hover:underline">
-                            Privacy Policy
-                            </a>
-                            .
+
+                {serviceType === "translation" ? (
+                  <TranslationQuote
+                    key={resetKey}
+                    languageTo={languageTo}
+                    setLanguageTo={setLanguageTo}
+                    languageFrom={languageFrom}
+                    setLanguageFrom={setLanguageFrom}
+                    documentType={documentType}
+                    setDocumentType={setDocumentType}
+                    wordCount={wordCount}
+                    setWordCount={setWordCount}
+                    urgency={urgency}
+                    setUrgency={setUrgency}
+                  />
+                ) : (
+                  <CleaningQuote
+                    key={resetKey}
+                    selectedDate={selectedDate}
+                    setSelectedDate={setSelectedDate}
+                    cleaningType={cleaningType}
+                    setCleaningType={setCleaningType}
+                    propertyType={propertyType}
+                    setPropertyType={setPropertyType}
+                    squareFootage={squareFootage}
+                    setSquareFootage={setSquareFootage}
+                    bedrooms={bedrooms}
+                    setBedrooms={setBedrooms}
+                    bathrooms={bathrooms}
+                    setBathrooms={setBathrooms}
+                    frequency={frequency}
+                    setFrequency={setFrequency}
+                    preferredTime={preferredTime}
+                    setPreferredTime={setPreferredTime}
+                  />
+                )}
+
+                <Separator />
+
+                <div className="space-y-6">
+                  <QuoteContactForm
+                    key={resetKey}
+                    firstName={firstName}
+                    lastName={lastName}
+                    email={email}
+                    phone={phone}
+                    company={company}
+                    address={address}
+                    city={city}
+                    state={state}
+                    zip={zip}
+                    message={message}
+                    setFirstName={setFirstName}
+                    setLastName={setLastName}
+                    setEmail={setEmail}
+                    setPhone={setPhone}
+                    setCompany={setCompany}
+                    setAddress={setAddress}
+                    setCity={setCity}
+                    setState={setState}
+                    setZip={setZip}
+                    setMessage={setMessage}
+                  />
+
+                  {serviceType === "translation" && (
+                    <div className="space-y-2">
+                      <label htmlFor="fileUpload">Upload Document (Optional)</label>
+                      <div
+                        className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:bg-gray-50 transition-colors"
+                        onClick={() => document.getElementById('fileUpload')?.click()}
+                      >
+                        <input
+                          type="file"
+                          id="fileUpload"
+                          className="hidden"
+                          onChange={(e) => setFile(e.target.files?.[0] || null)}
+                        />
+                        <FaCloudUploadAlt className="text-blue-500 text-3xl mb-2" />
+                        <p className="text-gray-500 mb-1">
+                          {file ? file.name : 'Drag and drop your file here, or click to browse'}
                         </p>
-                        </CardFooter>
-                    </Card>
+                        <p className="text-xs text-gray-400">
+                          Supports PDF, DOCX, XLSX, PPTX (Max 20MB)
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
-            </div>
-        </>
-    )
-}
+              </div>
+            </CardContent>
 
-export default page
+            <CardFooter className="flex flex-col space-y-4">
+              <Button
+                type="submit"
+                className="w-full rounded-full"
+                disabled={isLoading}
+              >
+                {isLoading ? 'Submitting...' : 'Submit Quote Request'}
+              </Button>
+              <p className="text-xs text-gray-500 text-center">
+                By submitting this form, you agree to our{" "}
+                <a href="#" className="text-blue-600 hover:underline">
+                  Terms of Service
+                </a>{" "}and{" "}
+                <a href="#" className="text-blue-600 hover:underline">
+                  Privacy Policy
+                </a>.
+              </p>
+            </CardFooter>
+          </form>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+export default Page;

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Afacad, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner"; // if using 'sonner'
 // import Footer from "@/components/Footer";
 // import Navbar from "@/components/Navbar";
 import SessionProviderWrapper from "./providers/SessionProviderWrapper";
@@ -31,6 +32,7 @@ export default function RootLayout({
         <SessionProviderWrapper>
           {/* <Navbar/> */}
           {children}
+          <Toaster richColors />
           {/* <Footer/> */}
         </SessionProviderWrapper>
       </body>
