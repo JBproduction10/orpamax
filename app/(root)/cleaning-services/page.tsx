@@ -10,7 +10,11 @@ import CleaningCheklist from '@/components/cleaning-service/CleaningCheklist';
 import CleaningBooking from '@/components/cleaning-service/CleaningBooking';
 
 const page = () => {
-        
+    const [message, setMessage] = useState("");
+    const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+    const [selectedTime, setSelectedTime] = useState("");
+    const [selectedService, setSelectedService] = useState("");
+
     const testimonials = [
         {
           name: "Sarah Johnson",
@@ -51,7 +55,16 @@ const page = () => {
               {/* Cleaning Checklist */}
               <CleaningCheklist/>
               {/* Booking Calendar */}
-              <CleaningBooking/>
+              <CleaningBooking 
+                selectedDate={selectedDate} 
+                setSelectedDate={setSelectedDate} 
+                selectedTime={selectedTime} 
+                setSelectedTime={setSelectedTime} 
+                selectedService={selectedService} 
+                setSelectedService={setSelectedService} 
+                message={message} 
+                setMessage={setMessage}
+                />
               {/* Before/After Gallery */}
               {/* <div className="bg-blue-50 py-16">
                 <div className="container mx-auto px-4">

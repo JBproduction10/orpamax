@@ -47,14 +47,53 @@ const Sidebar = () => {
 
         <h2 className="text-xl font-bold mb-8 hidden md:block">Admin Dashboard</h2>
         <ul>
-          <li className="mb-6">
-            <Link href="/admin/dashboard/translation-services" className="text-white hover:text-blue-400">Translation Services</Link>
+         {/* Edit translation Section */}
+         <li className="mb-6">
+            <button
+              onClick={() => toggleDropdown('translation')}
+              className="w-full text-left text-white hover:text-blue-400 focus:outline-none"
+            >
+              Edit Translation Services {openDropdown === 'translation' ? '▲' : '▼'}
+            </button>
+            {openDropdown === 'translation' && (
+              <ul className="mt-2 ml-4 space-y-2">
+                <li>
+                  <Link href="/admin/dashboard/translation-services" className="text-white hover:text-blue-400">Translation Services</Link>
+                </li>
+              </ul>
+            )}
           </li>
+          {/* Edit Cleaning services Section */}
           <li className="mb-6">
-            <Link href="/admin/dashboard/cleaning-services" className="text-white hover:text-blue-400">Cleaning Services</Link>
+            <button
+              onClick={() => toggleDropdown('cleaning')}
+              className="w-full text-left text-white hover:text-blue-400 focus:outline-none"
+            >
+              Edit Cleaning Services {openDropdown === 'cleaning' ? '▲' : '▼'}
+            </button>
+            {openDropdown === 'cleaning' && (
+              <ul className="mt-2 ml-4 space-y-2">
+                <li>
+                  <Link href="/admin/dashboard/cleaning-services" className="text-white hover:text-blue-400">Cleaning Services</Link>
+                </li>
+              </ul>
+            )}
           </li>
+          {/* Edit About Section */}
           <li className="mb-6">
-            <Link href="/products" className="text-white hover:text-blue-400">Products</Link>
+            <button
+              onClick={() => toggleDropdown('about')}
+              className="w-full text-left text-white hover:text-blue-400 focus:outline-none"
+            >
+              Edit About Us {openDropdown === 'about' ? '▲' : '▼'}
+            </button>
+            {openDropdown === 'about' && (
+              <ul className="mt-2 ml-4 space-y-2">
+                <li>
+                  <Link href="/admin/dashboard/about-us" className="text-white hover:text-blue-400">About Us</Link>
+                </li>
+              </ul>
+            )}
           </li>
 
           {/* Edit Contact Section */}
@@ -90,9 +129,9 @@ const Sidebar = () => {
                 <li>
                   <Link href="/admin/dashboard/footer" className="text-sm text-white hover:text-blue-400">Edit Footer Section</Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link href="/settings/security" className="text-sm text-white hover:text-blue-400">Security</Link>
-                </li>
+                </li> */}
               </ul>
             )}
           </li>
