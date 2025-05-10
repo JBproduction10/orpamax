@@ -42,8 +42,8 @@ export async function POST(req: Request) {
 }
 
 // PUT method to update a HomeHero
-export async function PUT(req: Request, context: { params: { id: string } }) {
-  const { id } = context.params; // Destructure id from context.params
+export async function PUT(req: Request, {params}: {params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const data = await req.json();
 
   await connectToDatabase();
@@ -80,8 +80,8 @@ export async function PUT(req: Request, context: { params: { id: string } }) {
 }
 
 // DELETE method to delete a HomeHero and its image
-export async function DELETE(req: Request, context: { params: { id: string } }) {
-  const { id } = context.params; // Destructure id from context.params
+export async function DELETE(req: Request, {params}: {params: Promise<{ id: string }>}) {
+  const { id } = await params;
 
   await connectToDatabase();
 
