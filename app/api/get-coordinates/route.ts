@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing address' }, { status: 400 });
   }
 
-  const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+  const apiKey = process.env.GOOGLE_MAP_API_KEY;
   if (!apiKey) {
     return NextResponse.json({ error: 'Missing API Key' }, { status: 500 });
   }

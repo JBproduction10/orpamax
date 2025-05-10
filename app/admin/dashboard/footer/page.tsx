@@ -15,7 +15,7 @@ export default function EditFooter() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    fetch('/api/home/footer')
+    fetch('/api/admin/footer')
       .then(res => res.json())
       .then(data => {
         setFooter(data);
@@ -42,7 +42,7 @@ export default function EditFooter() {
     if (logo) {
       const formData = new FormData();
       formData.append('file', logo);
-      formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_PRESET || '');
+      // formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_PRESET || '');
 
       const res = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, {
         method: 'POST',
@@ -52,7 +52,7 @@ export default function EditFooter() {
       logoData = await res.json();
     }
 
-    await fetch('/api/home/footer', {
+    await fetch('/api/admin/footer.[id]', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -74,7 +74,7 @@ export default function EditFooter() {
   async function handleDeleteImage() {
     if (!confirm('Are you sure you want to delete the logo?')) return;
 
-    const res = await fetch('/api/home/footer', { method: 'DELETE' });
+    const res = await fetch('/api/admin/footer/[id]', { method: 'DELETE' });
 
     if (res.ok) {
       setFooter((prev: any) => ({ ...prev, logo: null }));

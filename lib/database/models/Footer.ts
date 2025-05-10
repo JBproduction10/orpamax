@@ -5,8 +5,8 @@ const FooterSchema = new mongoose.Schema({
   location: String,
   businessHour: { type: String, default: "MON-FRI: 8:00 AM - 6:00 PM" },
   logo: {
-    url: { type: String, default: "" },
-    publicId: String,
+    secure_url: { type: String, default: "" },
+    public_id: {type: String, default: ""}
   },
   description: {
     type: String,

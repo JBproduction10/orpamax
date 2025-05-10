@@ -1,6 +1,7 @@
 import { BusinessInfoProvider } from '@/contexts/contact/BusinessInfoContext'
 import Sidebar from '@/components/admin/AdminSidebar';
 import Header from '@/components/admin/AdminHeader';
+import { Toaster } from "@/components/ui/sonner";
 
 export default function RootLayout({
   children,
@@ -15,6 +16,7 @@ export default function RootLayout({
         <Header />
         <div className="p-8">
           {children}
+          <Toaster />
         </div>
       </div>
     </div>

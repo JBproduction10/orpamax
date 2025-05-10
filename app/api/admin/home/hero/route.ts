@@ -5,11 +5,10 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
   await connectToDatabase();
 
-  const heroes = await HomeHero.find(); // get all hero entries
+  const heros = await HomeHero.find();
 
-  return NextResponse.json(heroes);
+  return NextResponse.json(heros);
 }
-
 
 export async function POST(req: NextRequest) {
   await connectToDatabase();

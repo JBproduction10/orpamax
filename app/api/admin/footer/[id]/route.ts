@@ -3,18 +3,6 @@ import Footer from "@/lib/database/models/Footer";
 import { NextResponse } from "next/server";
 import cloudinary from "@/lib/cloudinary";
 
-export async function GET() {
-  await connectToDatabase();
-  let footer = await Footer.findOne();
-
-  if (!footer) {
-    footer = new Footer();
-    await footer.save();
-  }
-
-  return NextResponse.json(footer);
-}
-
 export async function PUT(req: Request) {
   await connectToDatabase();
   const data = await req.json();
@@ -23,17 +11,17 @@ export async function PUT(req: Request) {
   if (!footer) footer = new Footer();
 
   // Handle Cloudinary logo
-  if (data.logo?.url && data.logo?.publicId) {
-    if (footer.logo?.publicId && footer.logo.publicId !== data.logo.publicId) {
+  if (data.logo?.secure_url && data.logo?.public_id) {
+    if (footer.logo?.secure_url && footer.logo.public_id !== data.logo.public_id) {
       try {
-        await cloudinary.uploader.destroy(footer.logo.publicId);
+        await cloudinary.uploader.destroy(footer.logo.public_id);
       } catch (err) {
         console.error("Cloudinary deletion failed:", err);
       }
     }
     footer.logo = {
-      url: data.logo.url,
-      publicId: data.logo.publicId,
+      secure_url: data.logo.secure_url,
+      public_id: data.logo.public_id,
     };
   }
 
@@ -42,6 +30,7 @@ export async function PUT(req: Request) {
   footer.description = data.description;
   footer.location = data.location;
   footer.businessHour = data.businessHour;
+  footer.logo = data.logo;
 
   await footer.save();
   return NextResponse.json({ message: "Footer updated", footer });
@@ -53,9 +42,9 @@ export async function DELETE() {
   const footer = await Footer.findOne();
   if (!footer) return NextResponse.json({ message: "Footer not found" }, { status: 404 });
 
-  if (footer.logo?.publicId) {
+  if (footer.logo?.public_id) {
     try {
-      await cloudinary.uploader.destroy(footer.logo.publicId);
+      await cloudinary.uploader.destroy(footer.logo.public_id);
     } catch (err) {
       console.error("Failed to delete image from Cloudinary:", err);
       return NextResponse.json({ message: "Cloudinary deletion failed" }, { status: 500 });
