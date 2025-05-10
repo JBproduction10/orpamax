@@ -11,21 +11,21 @@ export async function GET(req: NextRequest) {
 }
 
 
-export async function POST(req: NextRequest) {
-  await connectToDatabase();
+// export async function POST(req: NextRequest) {
+//   await connectToDatabase();
 
-  const { title, description, image } = await req.json();
+//   const { title, description, image } = await req.json();
 
-  let hero = await HomeHero.findOne();
-  if (!hero) {
-    hero = new HomeHero();
-  }
+//   let hero = await HomeHero.findOne();
+//   if (!hero) {
+//     hero = new HomeHero();
+//   }
 
-  hero.title = title;
-  hero.description = description;
-  hero.imageUrl = image;
+//   hero.title = title;
+//   hero.description = description;
+//   hero.imageUrl = image;
 
-  await hero.save();
+//   await hero.save();
 
-  return NextResponse.json({ success: true, hero });
-}
+//   return NextResponse.json({ success: true, hero });
+// }

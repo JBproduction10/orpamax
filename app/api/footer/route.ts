@@ -1,16 +1,24 @@
 import { connectToDatabase } from "@/lib/database/mongodb";
 import Footer from "@/lib/database/models/Footer";
-import { NextResponse } from "next/server";
-import cloudinary from "@/lib/cloudinary";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
   await connectToDatabase();
-  let footer = await Footer.findOne();
+  const footer = await Footer.findOne();
+if (!footer) {
+  return NextResponse.json(
+    {
+      companyName: "", 
+      logo: { secure_url: "", public_id: "" },
+      businessHour: "",
+      location: '',
+      description: '',
+      email: '',
+      phone:'',
+    },
+    { status: 200 }
+  );
+}
+return NextResponse.json(footer);
 
-  if (!footer) {
-    footer = new Footer();
-    await footer.save();
-  }
-
-  return NextResponse.json(footer);
 }

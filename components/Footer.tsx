@@ -7,24 +7,31 @@ import { FaClock, FaEnvelope, FaMapMarkerAlt, FaPhoneAlt } from 'react-icons/fa'
 const Footer = () => {
   const [footer, setFooter] = useState({
     companyName: "", 
-    logo: "",
+    logo: {
+      secure_url: "",
+      public_id: ""
+    },
     businessHour: "",
     location: '',
     description: '',
-    email: ''
+    email: '',
+    phone:"",
   });
   const [existingContent, setExistingContent] = useState(null);
 
   useEffect(() => {
-    fetch("/api/home/footer")
+    fetch("/api/footer")
       .then(res => res.json())
       .then(data => {
-        if(data){
+        console.log("Fetched footer data:", data); // Add this
+        if (data) {
           setFooter(data);
           setExistingContent(data);
         }
       })
+      .catch(err => console.error("Failed to fetch footer:", err));
   }, []);
+  
 
   return (
     <footer className="bg-gray-900 text-white">
@@ -33,7 +40,7 @@ const Footer = () => {
             <div>
               <div className="flex items-center mb-4">
                 <Image
-                  src="/orpamax/fulllogo_transparent.png"
+                  src={footer.logo?.secure_url || "/orpamax/fulllogo_transparent.png"}
                   alt="Company Logo"
                   width={200}
                   height={200}
@@ -187,10 +194,10 @@ const Footer = () => {
                     {footer.location}
                   </span>
                 </li>
-                {/* <li className="flex items-center">
+                <li className="flex items-center">
                   <FaPhoneAlt className="fas fa-phone-alt mr-2 text-blue-300"/>
-                  <span></span>
-                </li> */}
+                  <span>{footer.phone}</span>
+                </li>
                 <li className="flex items-center">
                   <FaEnvelope className="fas fa-envelope mr-2 text-blue-300"/>
                   <span>{footer.email}</span>

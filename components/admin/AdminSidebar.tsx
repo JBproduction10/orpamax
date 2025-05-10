@@ -88,7 +88,7 @@ const Sidebar = () => {
                   <Link href="/admin/dashboard/home/hero" className="text-sm text-white hover:text-blue-400">Edit Home Hero Section</Link>
                 </li>
                 <li>
-                  <Link href="/admin/dashboard/home/footer" className="text-sm text-white hover:text-blue-400">Edit Footer Section</Link>
+                  <Link href="/admin/dashboard/footer" className="text-sm text-white hover:text-blue-400">Edit Footer Section</Link>
                 </li>
                 <li>
                   <Link href="/settings/security" className="text-sm text-white hover:text-blue-400">Security</Link>
