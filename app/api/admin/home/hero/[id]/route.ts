@@ -2,14 +2,17 @@ import { connectToDatabase } from "@/lib/database/mongodb";
 import HomeHero from "@/lib/database/models/HomeHero";
 import cloudinary from "@/lib/cloudinary";
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 
 // Corrected GET method
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: Request, context: { params: { id: string } }) {
+  const { id } = context.params; // Destructure id from context.params
+
   try {
     await connectToDatabase();
-    const hero = await HomeHero.findById(params.id);
-    if (!hero) return new NextResponse("Hero not found", { status: 404 });
+    const hero = await HomeHero.findById(id);
+    if (!hero) {
+      return new NextResponse("Hero not found", { status: 404 });
+    }
 
     return NextResponse.json(hero);
   } catch (error) {
@@ -18,7 +21,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 }
 
 // POST method to create a new HomeHero
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   const data = await req.json();
 
   await connectToDatabase();
@@ -37,9 +40,9 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ message: "Home hero created successfully", newHomeHero });
 }
 
-// Corrected PUT method with awaiting params
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;  // No need for await, as params is already available
+// PUT method to update a HomeHero
+export async function PUT(req: Request, context: { params: { id: string } }) {
+  const { id } = context.params; // Destructure id from context.params
   const data = await req.json();
 
   await connectToDatabase();
@@ -76,8 +79,8 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 }
 
 // DELETE method to delete a HomeHero and its image
-export async function DELETE(_: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function DELETE(req: Request, context: { params: { id: string } }) {
+  const { id } = context.params; // Destructure id from context.params
 
   await connectToDatabase();
 
