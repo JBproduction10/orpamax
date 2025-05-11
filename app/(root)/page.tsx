@@ -16,28 +16,47 @@ import { FaArrowRight } from "react-icons/fa";
 
 const App: React.FC = () => {
   const [heroes, setHeroes] = useState<any[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/home/hero", { cache: "no-store" })
-      .then((res) => res.json())
-      .then((data) => setHeroes(data))
-      .catch((err) => console.error("Failed to fetch hero data", err));
+    const fetchHeroes = async () => {
+      try {
+        const res = await fetch("/api/home/hero");
+        if (!res.ok) throw new Error(`Failed to fetch: ${res.statusText}`);
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setHeroes(data);
+        } else {
+          throw new Error("Response is not an array");
+        }
+      } catch (err: any) {
+        console.error("Error fetching hero data:", err);
+        setError("Failed to load hero content.");
+      }
+    };
+
+    fetchHeroes();
   }, []);
 
   return (
     <div>
       <main className="pt-20 pb-12">
+        {error && (
+          <div className="text-red-500 text-center mb-4">{error}</div>
+        )}
+
         {heroes.length > 0 && (
           <div className="relative h-[600px] overflow-hidden">
             <Swiper
               modules={[Pagination, Autoplay]}
               pagination={{ clickable: true }}
               autoplay={{ delay: 4000 }}
-              loop={true}
+              loop
               className="h-full w-full"
             >
               {heroes.map((hero, idx) =>
-                hero.imageUrl?.map((img: any, imgIdx: number) => (
+                Array.isArray(hero.imageUrl) &&
+                hero.imageUrl.map((img: any, imgIdx: number) => (
                   <SwiperSlide key={`${idx}-${imgIdx}`}>
                     <div
                       className="absolute inset-0"
@@ -46,9 +65,7 @@ const App: React.FC = () => {
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                       }}
-                    >
-                      {/* <div className="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-transparent z-0" /> */}
-                    </div>
+                    />
 
                     <div className="relative container mx-auto px-4 h-full flex flex-col justify-center z-10 text-white">
                       <div className="max-w-2xl">
@@ -57,16 +74,20 @@ const App: React.FC = () => {
                         </h1>
                         <p className="text-xl mb-8">{hero.description}</p>
                         <div className="flex flex-col sm:flex-row gap-4">
-                          <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
-                            <Link href="/quotes">Request a Quote</Link>
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="lg"
-                            className="bg-white/10 text-white hover:bg-white/20"
-                          >
-                            Our Services <FaArrowRight className="ml-2" />
-                          </Button>
+                          <Link href="/quotes" passHref>
+                            <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+                              Request a Quote
+                            </Button>
+                          </Link>
+                          <Link href="/services" passHref>
+                            <Button
+                              variant="outline"
+                              size="lg"
+                              className="bg-white/10 text-white hover:bg-white/20"
+                            >
+                              Our Services <FaArrowRight className="ml-2" />
+                            </Button>
+                          </Link>
                         </div>
                       </div>
                     </div>
@@ -76,6 +97,7 @@ const App: React.FC = () => {
             </Swiper>
           </div>
         )}
+
         <ServiceOverview />
         <QuickQuote />
         <Testimonials />

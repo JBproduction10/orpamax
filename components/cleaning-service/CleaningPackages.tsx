@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import React from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '../ui/button'
 import {
   Card,
@@ -12,50 +12,60 @@ import {
   CardFooter
 } from '../ui/card'
 
+import { CleaningPackage } from '@/types/types'
+
 // All package data mapped here
-const packages = [
-  {
-    title: 'Standard Clean',
-    price: '$120',
-    description: 'Perfect for regular maintenance cleaning',
-    features: [
-      'Dusting and vacuuming',
-      'Kitchen and bathroom cleaning',
-      'Floor mopping',
-      'Trash removal',
-      'Surface wiping'
-    ]
-  },
-  {
-    title: 'Deep Clean',
-    price: '$220',
-    description: 'Thorough cleaning of all areas and surfaces',
-    features: [
-      'All Standard Clean services',
-      'Inside cabinet cleaning',
-      'Baseboard and vent cleaning',
-      'Window sill cleaning',
-      'Appliance cleaning',
-      'Light fixture dusting'
-    ],
-    highlighted: true
-  },
-  {
-    title: 'Move-In/Out Clean',
-    price: '$320',
-    description: 'Comprehensive cleaning for property transitions',
-    features: [
-      'All Deep Clean services',
-      'Inside oven and refrigerator',
-      'Inside window cleaning',
-      'Wall spot cleaning',
-      'Cabinet deep cleaning',
-      'Fixture descaling'
-    ]
-  }
-]
+// const packages = [
+//   {
+//     title: 'Standard Clean',
+//     price: '$120',
+//     description: 'Perfect for regular maintenance cleaning',
+//     features: [
+//       'Dusting and vacuuming',
+//       'Kitchen and bathroom cleaning',
+//       'Floor mopping',
+//       'Trash removal',
+//       'Surface wiping'
+//     ]
+//   },
+//   {
+//     title: 'Deep Clean',
+//     price: '$220',
+//     description: 'Thorough cleaning of all areas and surfaces',
+//     features: [
+//       'All Standard Clean services',
+//       'Inside cabinet cleaning',
+//       'Baseboard and vent cleaning',
+//       'Window sill cleaning',
+//       'Appliance cleaning',
+//       'Light fixture dusting'
+//     ],
+//     highlighted: true
+//   },
+//   {
+//     title: 'Move-In/Out Clean',
+//     price: '$320',
+//     description: 'Comprehensive cleaning for property transitions',
+//     features: [
+//       'All Deep Clean services',
+//       'Inside oven and refrigerator',
+//       'Inside window cleaning',
+//       'Wall spot cleaning',
+//       'Cabinet deep cleaning',
+//       'Fixture descaling'
+//     ]
+//   }
+// ]
 
 const CleaningPackages = () => {
+  const [packages, setPackages] = useState<CleaningPackage[]>([])
+
+  useEffect(() => {
+    fetch('/api/cleaning/packages')
+      .then(res => res.json())
+      .then(data => setPackages(data.packages))
+  }, [])
+
   return (
     <div className="bg-blue-50 py-16">
       <div className="container mx-auto px-4">

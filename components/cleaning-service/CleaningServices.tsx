@@ -1,4 +1,8 @@
+'use client'
+
 import React from 'react'
+import useSWR from 'swr';
+import { fetcher } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../ui/card';
 import { FaHome, FaBuilding, FaBroom, FaTruckMoving } from 'react-icons/fa';
@@ -7,36 +11,53 @@ import commercialClean from "@/public/assets/images/cleaning-office.jpg"
 import homeClean from "@/public/assets/images/cleaning.jpg"
 import moveClean from "@/public/assets/images/post-construction.jpg"
 
+type Service = {
+  _id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  iconName: string;
+};
+
+const iconMap: Record<string, React.ElementType> = {
+  FaHome,
+  FaBuilding,
+  FaBroom,
+  FaTruckMoving,
+};
+
 const CleaningServices = () => {
-    const cleaningServices = [
-        {
-          title: "Residential Cleaning",
-          description:
-            "Comprehensive home cleaning services tailored to your needs",
-          icon: <FaHome/>,
-          imageUrl:homeClean.src,
-        },
-        {
-          title: "Commercial Cleaning",
-          description:
-            "Professional cleaning solutions for offices and business spaces",
-          icon: <FaBuilding/>,
-          imageUrl: commercialClean.src,
-        },
-        {
-          title: "Deep Cleaning",
-          description: "Intensive cleaning service addressing hard-to-reach areas",
-          icon: <FaBroom/>,
-          imageUrl: deepClean.src,
-        },
-        {
-          title: "Move-in/Move-out Cleaning",
-          description:
-            "Specialized cleaning for property transitions and real estate",
-          icon: <FaTruckMoving/>,
-          imageUrl: moveClean.src,
-        },
-      ];
+  const { data, error, isLoading } = useSWR<{ services: Service[] }>('/api/cleaning/services', fetcher);
+  const cleaningServices = data?.services ?? [];
+    // const cleaningServices = [
+    //     {
+    //       title: "Residential Cleaning",
+    //       description:
+    //         "Comprehensive home cleaning services tailored to your needs",
+    //       icon: <FaHome/>,
+    //       imageUrl:homeClean.src,
+    //     },
+    //     {
+    //       title: "Commercial Cleaning",
+    //       description:
+    //         "Professional cleaning solutions for offices and business spaces",
+    //       icon: <FaBuilding/>,
+    //       imageUrl: commercialClean.src,
+    //     },
+    //     {
+    //       title: "Deep Cleaning",
+    //       description: "Intensive cleaning service addressing hard-to-reach areas",
+    //       icon: <FaBroom/>,
+    //       imageUrl: deepClean.src,
+    //     },
+    //     {
+    //       title: "Move-in/Move-out Cleaning",
+    //       description:
+    //         "Specialized cleaning for property transitions and real estate",
+    //       icon: <FaTruckMoving/>,
+    //       imageUrl: moveClean.src,
+    //     },
+    //   ];
       
     return (
         <div className="container mx-auto px-4 py-16">
@@ -64,7 +85,7 @@ const CleaningServices = () => {
                     </div>
                     <CardHeader>
                     <CardTitle className="flex items-center">
-                        <i className={`$ text-blue-600 mr-2`}>{service.icon}</i>
+                        <i className={`$ text-blue-600 mr-2`}>{service.iconName}</i>
                         {service.title}
                     </CardTitle>
                     </CardHeader>

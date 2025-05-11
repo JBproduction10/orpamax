@@ -1,63 +1,45 @@
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@radix-ui/react-tabs';
-import React from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '../ui/card';
-import { FaQuestion } from 'react-icons/fa';
+'use client';
 
-const faqData = {
-  general: [
-    {
-      question: "What languages do you translate?",
-      answer:
-        "We offer translation services for over 50 languages including English, Spanish, French, German, Chinese, Japanese, Arabic, and many more. If you need a specific language pair, please contact us to confirm availability.",
-    },
-    {
-      question: "Are your translators certified?",
-      answer:
-        "Yes, our translation team consists of certified professional translators with expertise in various fields. For official documents requiring certified translations, we provide certification and notarization services as needed.",
-    },
-    {
-      question: "How do you ensure translation quality?",
-      answer:
-        "We follow a rigorous quality assurance process that includes translation by a native speaker, editing by a second linguist, and final proofreading before delivery. We also use specialized terminology management systems to ensure consistency.",
-    },
-  ],
-  process: [
-    {
-      question: "How do I submit documents for translation?",
-      answer:
-        "You can submit your documents through our secure online portal, via email, or by using our quote request form. We accept most file formats including Word, PDF, Excel, PowerPoint, and InDesign files.",
-    },
-    {
-      question: "What is your typical turnaround time?",
-      answer:
-        "Turnaround time depends on the document length, complexity, and language pair. Standard delivery is typically 3-5 business days, while express and urgent options are available for faster delivery at additional cost.",
-    },
-    {
-      question: "Do you offer revisions after delivery?",
-      answer:
-        "Yes, we offer one round of revisions free of charge within 7 days of delivery. Additional revision requests may incur extra fees depending on the extent of changes requested.",
-    },
-  ],
-  pricing: [
-    {
-      question: "How do you calculate translation costs?",
-      answer:
-        "Our pricing is typically based on word count, language pair, subject matter complexity, and delivery timeline. Technical, legal, and medical translations may have higher rates due to specialized terminology requirements.",
-    },
-    {
-      question: "Do you offer volume discounts?",
-      answer:
-        "Yes, we offer discounted rates for large projects and ongoing translation needs. We can also create customized pricing packages for clients with regular translation requirements.",
-    },
-    {
-      question: "What payment methods do you accept?",
-      answer:
-        "We accept credit cards, PayPal, bank transfers, and corporate purchase orders. For large projects, we typically require a deposit before beginning work, with the balance due upon completion.",
-    },
-  ],
+import React, { useEffect, useState } from 'react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@radix-ui/react-tabs';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { FaQuestion } from 'react-icons/fa';
+import clsx from 'clsx'; // Optional: for cleaner conditional classes
+
+type Faq = {
+  _id: string;
+  category: string;
+  question: string;
+  answer: string;
 };
 
 const TranslationFaq = () => {
+  const [faqs, setFaqs] = useState<Faq[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [groupedFaqs, setGroupedFaqs] = useState<Record<string, Faq[]>>({});
+  const [activeTab, setActiveTab] = useState<string>('');
+
+  useEffect(() => {
+    fetch('/api/translation/translation-faq')
+      .then((res) => res.json())
+      .then((data: Faq[]) => {
+        const groups: Record<string, Faq[]> = {};
+        data.forEach((faq) => {
+          const category = faq.category.toLowerCase();
+          if (!groups[category]) groups[category] = [];
+          groups[category].push(faq);
+        });
+
+        const uniqueCategories = Object.keys(groups);
+        setFaqs(data);
+        setGroupedFaqs(groups);
+        setCategories(uniqueCategories);
+        setActiveTab(uniqueCategories[0]); // Set default selected tab
+      });
+  }, []);
+
+  if (categories.length === 0) return null;
+
   return (
     <div className="bg-blue-50 py-16">
       <div className="container mx-auto px-4">
@@ -68,24 +50,29 @@ const TranslationFaq = () => {
           </p>
         </div>
         <div className="max-w-3xl mx-auto">
-          <Tabs defaultValue="general" className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-3 mb-8">
-              {Object.keys(faqData).map((section) => (
+              {categories.map((category) => (
                 <TabsTrigger
-                  key={section}
-                  value={section}
-                  className="rounded-lg whitespace-nowrap"
+                  key={category}
+                  value={category}
+                  className={clsx(
+                    'rounded-lg capitalize px-4 py-2 transition-colors',
+                    activeTab === category
+                      ? 'bg-blue-600 text-white shadow'
+                      : 'bg-white text-gray-700 hover:bg-blue-100'
+                  )}
                 >
-                  {section.charAt(0).toUpperCase() + section.slice(1)}
+                  {category}
                 </TabsTrigger>
               ))}
             </TabsList>
 
-            {Object.entries(faqData).map(([section, faqItems]) => (
-              <TabsContent key={section} value={section}>
+            {categories.map((category) => (
+              <TabsContent key={category} value={category}>
                 <div className="space-y-4">
-                  {faqItems.map((faq, index) => (
-                    <Card key={index} className="border-2 border-blue-100">
+                  {groupedFaqs[category].map((faq) => (
+                    <Card key={faq._id} className="border-2 border-blue-100">
                       <CardHeader>
                         <CardTitle className="text-lg flex items-center">
                           <FaQuestion className="text-blue-600 mr-2" />

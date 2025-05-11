@@ -1,47 +1,45 @@
-import mongoose from "mongoose";
+import mongoose,{ Schema, Document } from 'mongoose';
 
 // Define individual schemas
-const cleaningHeroSchema = new mongoose.Schema({
-    images: [{
-        secure_url: { type: String, default: "" },
-        public_id: { type: String, default: "" }
-    }],
-    title: {
-        type: String,
-        default: "Professional Cleaning Services"
-    },
-    description: {
-        type: String,
-        default: "Creating spotless environments for homes and businesses. Our expert cleaning team delivers exceptional results every time."
-    }
-});
+const cleaningHeroSchema = new Schema({
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  image: {
+    public_id: { type: String, required: true },
+    secure_url: { type: String, required: true },
+  },
+}, { timestamps: true });
+  
 
-const cleaningServicesSchema = new mongoose.Schema({
-    image: {
-        public_id: { type: String, default: '' },
-        secure_url: { type: String, default: '' },
+const cleaningServiceSchema = new Schema({
+  
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+    icon: { type: String },
+    imageUrl: {
+      secure_url: { type: String, required: true },
+      public_id: { type: String, required: true },
     },
-    title: { type: String, default: "" },
-    description: String,
-    icon: String,
-});
+  },
+  { timestamps: true }
+);
 
 const cleaningServicesPriceSchema = new mongoose.Schema({
-    title: String,
-    description: String,
-    itemList: [{ type: String }],
-    price: String,
+    title: { type: String, required: true },
+    price: { type: String, required: true },
+    description: { type: String, required: true },
+    features: [{ type: String }],
+    highlighted: { type: Boolean, default: false }
 });
 
 const cleaningChecklistSchema = new mongoose.Schema({
     title: String,
-    icon: String,
-    itemList: [{ type: String }],
+    items:[{type: String}],
 });
 
 // Create and export models
 const CleaningHero = mongoose.models.CleaningHero || mongoose.model("CleaningHero", cleaningHeroSchema);
-const CleaningService = mongoose.models.CleaningService || mongoose.model("CleaningService", cleaningServicesSchema);
+const CleaningService = mongoose.models.CleaningService || mongoose.model("CleaningService", cleaningServiceSchema);
 const CleaningPrice = mongoose.models.CleaningPrice || mongoose.model("CleaningPrice", cleaningServicesPriceSchema);
 const CleaningChecklist = mongoose.models.CleaningChecklist || mongoose.model("CleaningChecklist", cleaningChecklistSchema);
 

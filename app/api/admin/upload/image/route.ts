@@ -1,12 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { v2 as cloudinaryV2 } from 'cloudinary';
+import { v2 as cloudinary } from 'cloudinary';
+import { Readable } from 'stream';
 import { connectToDatabase } from '@/lib/database/mongodb';
 
-cloudinaryV2.config({
-  cloud_name: process.env.CLOUDINARY_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_NAME!,
+  api_key: process.env.CLOUDINARY_API_KEY!,
+  api_secret: process.env.CLOUDINARY_API_SECRET!,
 });
+
+function bufferToStream(buffer: Buffer): Readable {
+  const readable = new Readable();
+  readable.push(buffer);
+  readable.push(null);
+  return readable;
+}
 
 const MAX_FILE_SIZE_MB = 5;
 
@@ -30,19 +38,22 @@ export async function POST(req: NextRequest) {
     const buffer = Buffer.from(arrayBuffer);
 
     const result = await new Promise<any>((resolve, reject) => {
-      cloudinaryV2.uploader.upload_stream(
+      const stream = cloudinary.uploader.upload_stream(
         {
+          folder: 'services',
           resource_type: 'image',
           transformation: [
-            { width: 1920, height: 1080, crop: 'fill', gravity: 'auto' }, // Full HD and fill the area
-            { quality: 'auto', fetch_format: 'auto' } // Optimize image quality and format
+            { width: 1920, height: 1080, crop: 'fill', gravity: 'auto' },
+            { quality: 'auto', fetch_format: 'auto' },
           ],
         },
         (err, res) => {
-          if (err) return reject(err);
+          if (err || !res) return reject(err);
           resolve(res);
         }
-      ).end(buffer);
+      );
+
+      bufferToStream(buffer).pipe(stream); // ✅ fix: use .pipe() instead of .end()
     });
 
     return NextResponse.json({

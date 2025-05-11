@@ -1,21 +1,12 @@
 import mongoose from "mongoose";
 
 const HomeHeroSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    default: "Professional Translation & Cleaning Services",
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  image: {
+    public_id: { type: String, required: true },
+    secure_url: { type: String, required: true },
   },
-  description: {
-    type: String,
-    default:
-      "Bridging languages and creating spotless environments for homes and businesses across the Portland Maine.",
-  },
-  imageUrl: [
-    {
-      secure_url: { type: String, default: "" },
-      public_id: { type: String, default: "" },
-    },
-  ],
 }, { timestamps: true });
 
 const HomeHero =

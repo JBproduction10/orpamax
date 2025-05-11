@@ -1,38 +1,58 @@
-import React from 'react'
-import { Button } from '../ui/button';
-import Link from 'next/link';
+'use client';
 
-const TranslationHero = () => {
-    return (
-        <div className="relative h-[700px] overflow-hidden">
-            <div
-                className="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-transparent"
-                style={{
-                backgroundImage: `url('/assets/flags.jpg')`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                }}
-            ></div>
+import { useEffect, useState } from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination'
+import 'swiper/css/autoplay';
+import { Button } from '../ui/button'
+import Link from 'next/link'
+
+export default function TranslationHeroSwiper() {
+  const [slides, setSlides] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch('/api/translation/hero')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setSlides(data);
+      });
+  }, []);
+
+  return (
+    <Swiper
+      modules={[Autoplay]}
+      loop={slides.length > 1}
+      pagination={{ clickable: true }}
+      autoplay={{
+        delay: 5000,
+        disableOnInteraction: false,
+      }}
+      className="h-[700px]"
+    >
+      {slides.map(slide => (
+        <SwiperSlide key={slide._id}>
+          <div
+            className="relative h-full bg-cover bg-center"
+            style={{ backgroundImage: `url(${slide.image?.secure_url || '/fallback.jpg'})` }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-transparent"></div>
             <div className="relative container mx-auto px-4 h-full flex flex-col justify-center">
-                <div className="max-w-2xl text-white">
-                    <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                        Professional Translation Services
-                    </h1>
-                    <p className="text-xl mb-8">
-                        Breaking language barriers with precision and cultural
-                        sensitivity. Our expert translators deliver accurate
-                        translations across multiple industries.
-                    </p>
-                    <Button
-                        size="lg"
-                        className="bg-blue-600 hover:bg-blue-700 !rounded-button whitespace-nowrap"
-                    >
-                        <Link href="/quotes">Get a Translation Quote</Link>
-                    </Button>
-                </div>
+              <div className="max-w-2xl text-white">
+                <h1 className="text-4xl md:text-5xl font-bold mb-4">{slide.title}</h1>
+                <p className="text-xl mb-8">{slide.description}</p>
+                <Button
+                    size="lg"
+                    className="bg-blue-600 hover:bg-blue-700 !rounded-button whitespace-nowrap"
+                  >
+                    <Link href="/quotes">Book Cleaning Service</Link>
+                  </Button>
+              </div>
             </div>
-        </div>
-    )
+          </div>
+        </SwiperSlide>
+      ))}
+    </Swiper>
+  );
 }
-
-export default TranslationHero;
