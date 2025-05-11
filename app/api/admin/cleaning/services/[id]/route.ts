@@ -5,21 +5,24 @@ import CleaningModels from "@/lib/database/models/CleaningModels";
 const CleaningService  = CleaningModels.CleaningService;
 
 
-export async function GET(req: Request, { params }: any) {
+export async function GET(req:Request, { params }: {params:Promise<{id: string}>}) {
+  const {id} = await params;
   await connectToDatabase();
-  const services = await CleaningService.findById(params.id);
+  const services = await CleaningService.findById(id);
   return NextResponse.json(services);
 }
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req:Request, { params }: {params:Promise<{id: string}>}) {
+  const {id} = await params;
   await connectToDatabase();
   const body = await req.json();
-  const updated = await CleaningService.findByIdAndUpdate(params.id, body, { new: true });
+  const updated = await CleaningService.findByIdAndUpdate(id, body, { new: true });
   return NextResponse.json(updated);
 }
 
-export async function DELETE(_: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req:Request, { params }: {params:Promise<{id: string}>}) {
+  const {id} = await params;
   await connectToDatabase();
-  await CleaningService.findByIdAndDelete(params.id);
+  await CleaningService.findByIdAndDelete(id);
   return NextResponse.json({ message: 'Deleted successfully' });
 }
