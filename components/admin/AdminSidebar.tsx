@@ -44,7 +44,7 @@ const Sidebar = () => {
       title: 'Edit Contact Section',
       key: 'contact',
       links: [
-        { href: '/admin/dashboard/contact-us', label: 'Contact Us' },
+        { href: '/admin/dashboard/contact-us/contact-info', label: 'Manage Contact Info' },
       ],
     },
     {

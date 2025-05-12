@@ -36,6 +36,7 @@ const Navbar = () => {
     { href: "/cleaning-services", label: "Cleaning Services" },
     { href: "/quotes", label: "Get A Quote" },
     { href: "/contact-us", label: "Contact Us" },
+    { href: "/about-us", label: "About Us" },
   ];
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
