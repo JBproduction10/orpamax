@@ -194,10 +194,10 @@ const Footer = () => {
                     {footer.location}
                   </span>
                 </li>
-                {/* <li className="flex items-center">
+                <li className="flex items-center">
                   <FaPhoneAlt className="fas fa-phone-alt mr-2 text-blue-300"/>
                   <span>{footer.phone}</span>
-                </li> */}
+                </li>
                 <li className="flex items-center">
                   <FaEnvelope className="fas fa-envelope mr-2 text-blue-300"/>
                   <span>{footer.email}</span>
