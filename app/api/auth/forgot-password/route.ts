@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/database/mongodb";
 import User from "@/lib/database/models/User";
-import sendEmail from "@/utils/sendEmails"; // your utility to send email
+import {sendEmail} from "@/utils/sendEmails"; // your utility to send email
 import crypto from "crypto";
 
 export async function POST(req: Request) {
@@ -31,6 +31,7 @@ export async function POST(req: Request) {
 
   await sendEmail(
   email,
+  resetLink,
   "Password Reset Instructions",
   emailContent // This should be plain text or HTML depending on your `sendEmail` config
 );
