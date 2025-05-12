@@ -2,12 +2,10 @@ import { connectToDatabase } from "@/lib/database/mongodb";
 import HomeHero from "@/lib/database/models/HomeHero";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   await connectToDatabase();
-
-  const heroes = await HomeHero.find(); // get all hero entries
-
-  return NextResponse.json(heroes);
+  const data = await HomeHero.find().sort({ createdAt: 1 });
+  return NextResponse.json(data);
 }
 
 

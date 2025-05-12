@@ -28,7 +28,7 @@ export default function CreateHomeHero() {
         return;
       }
 
-      toast.loading('Creating hero...');
+      // toast.loading('Creating hero...');
 
       const formData = new FormData();
       formData.append('file', file);

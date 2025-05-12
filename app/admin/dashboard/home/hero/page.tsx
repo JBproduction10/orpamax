@@ -10,6 +10,10 @@ export default function HomeHeroList() {
 
   const handleDelete = async (id: string) => {
     await fetch(`/api/admin/home/hero/${id}`, { method: 'DELETE' });
+    const imageRes = await fetch('/api/admin/delete/image', {
+        method: 'POST',
+        body: id,
+      });
     mutate();
   };
 
