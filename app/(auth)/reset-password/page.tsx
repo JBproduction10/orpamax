@@ -21,7 +21,7 @@ export default function ResetPasswordPage() {
 
     if (res.ok) {
       setMessage("Password reset successful! Redirecting...");
-      setTimeout(() => router.push("/login"), 2000);
+      setTimeout(() => router.push("/sign-in"), 2000);
     } else {
       setMessage(data.error || "Failed to reset password.");
     }
@@ -55,7 +55,7 @@ export default function ResetPasswordPage() {
           placeholder="New Password"
           required
         />
-        <button className="w-full bg-green-600 text-white p-2 rounded">
+        <button className="w-full bg-blue-600 text-white p-2 rounded">
           Reset Password
         </button>
       </form>

@@ -6,7 +6,10 @@ export interface IUser extends Document {
   password?: string;
   image?: string;
   role?: "user" | "admin";
-  resetCode?: string;
+  resetCode?: {
+    data: string;
+    expiresAt: Date;
+  };
 }
 
 const UserSchema = new Schema<IUser>(
@@ -16,11 +19,9 @@ const UserSchema = new Schema<IUser>(
     password: String,
     image: String,
     role: { type: String, enum: ["user", "admin"], default: "user" },
-    resetCode: {data:String,
-      expiresAt:{
-        type: Date,
-        default: () => new Date(Date.now() + 10 * 60 * 1000), // 10 min
-      }
+    resetCode: {
+      data: String,
+      expiresAt: Date,
     },
   },
   { timestamps: true }

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import {connectToDatabase} from "@/lib/database/mongodb";
+import { connectToDatabase } from "@/lib/database/mongodb";
 import User from "@/lib/database/models/User";
 import bcrypt from "bcrypt";
 
@@ -8,6 +8,7 @@ export async function POST(req: Request) {
   const { email, resetCode, newPassword } = await req.json();
 
   const user = await User.findOne({ email });
+
   if (
     !user ||
     !user.resetCode ||

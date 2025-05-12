@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { Afacad, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/sonner"; // if using 'sonner'
-// import Footer from "@/components/Footer";
-// import Navbar from "@/components/Navbar";
+import { Toaster } from "@/components/ui/sonner";
 import SessionProviderWrapper from "./providers/SessionProviderWrapper";
 
+// Fonts
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -16,9 +15,48 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const afacad = Afacad({
+  variable: "--font-afacad",
+  subsets: ["latin"],
+});
+
+// SEO metadata
 export const metadata: Metadata = {
-  title: "Orpamax",
-  description: "Small to Care, Big in Delivery",
+  title: "Orpamax | Translation & Cleaning Services",
+  description: "Orpamax offers professional translation and commercial cleaning services. Small to care, big in delivery.",
+  keywords: [
+    "Orpamax",
+    "Translation Services",
+    "Cleaning Services",
+    "Commercial Cleaning",
+    "Multilingual Translation",
+    "Professional Interpreters",
+    "Office Cleaning",
+    "Deep Cleaning",
+  ],
+  authors: [{ name: "Patrick Bakajika", url: "https://orpamax.com" }],
+  creator: "Orpamax",
+  robots: "index, follow",
+  openGraph: {
+    type: "website",
+    url: "https://orpamax.com",
+    title: "Orpamax | Translation & Cleaning Services",
+    description: "Small to care, big in delivery.",
+    siteName: "Orpamax",
+    images: [
+      {
+        url: "https://orpamax.com/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Orpamax Logo",
+      },
+    ],
+  },
+  icons: {
+    icon: "/orpamax/icononly.png",
+    shortcut: "/orpamax/icononly.png",
+    apple: "/orpamax/icononly.png",
+  },
 };
 
 export default function RootLayout({
@@ -27,13 +65,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${afacad.variable}`}>
       <body>
         <SessionProviderWrapper>
-          {/* <Navbar/> */}
+          {/* <Navbar /> */}
           {children}
           <Toaster richColors />
-          {/* <Footer/> */}
+          {/* <Footer /> */}
         </SessionProviderWrapper>
       </body>
     </html>
