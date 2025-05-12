@@ -1,9 +1,9 @@
 import Credentials from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google";
+import Google from "next-auth/providers/google";
 import bcrypt from "bcrypt";
 import User,{ IUser } from "./database/models/User";
 import { connectToDatabase } from "./database/mongodb";
-import { Session } from "next-auth";
+import { Account, Profile, Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
 
 connectToDatabase();
@@ -11,9 +11,16 @@ connectToDatabase();
 export const authOptions = {
   
   providers: [
-    GoogleProvider({
+    Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
     }),
     Credentials({
         name: "Credentials",
