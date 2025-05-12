@@ -193,7 +193,7 @@ const SignInPageClient = () => {
                           Sign in <FaArrowRight className="ml-2" />
                         </Button>
                         <div className="text-center">
-                          <Link href="/auth/forgot-password" className="text-blue-500 hover:underline text-sm">
+                          <Link href="/forgot-password" className="text-blue-500 hover:underline text-sm">
                             Forgot password?
                           </Link>
                         </div>
