@@ -12,11 +12,10 @@ import { FaBroom, FaCloudUploadAlt, FaLanguage } from 'react-icons/fa';
 import TranslationQuote from '@/components/quote/TranslationQuote';
 import CleaningQuote from '@/components/quote/CleaningQuote';
 import QuoteContactForm from '@/components/quote/QuoteContactForm';
-import { toast } from "sonner"; // ✅ import toast
+import { toast } from "sonner";
 
 const Page = () => {
   const [resetKey, setResetKey] = useState(0);
-
   const [serviceType, setServiceType] = useState("translation");
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [languageTo, setLanguageTo] = useState("");
@@ -89,7 +88,6 @@ const Page = () => {
 
       toast.success("Quote request submitted successfully!");
 
-      // Reset form states
       setResetKey(prev => prev + 1);
       setServiceType("translation");
       setSelectedDate(undefined);
@@ -151,11 +149,17 @@ const Page = () => {
                     className="w-full"
                   >
                     <TabsList className="grid w-full grid-cols-2">
-                      <TabsTrigger value="translation" className="rounded whitespace-nowrap">
+                      <TabsTrigger
+                        value="translation"
+                        className="rounded whitespace-nowrap data-[state=active]:bg-blue-100 data-[state=active]:text-blue-600"
+                      >
                         <FaLanguage className="mr-2" />
                         Translation Services
                       </TabsTrigger>
-                      <TabsTrigger value="cleaning" className="rounded whitespace-nowrap">
+                      <TabsTrigger
+                        value="cleaning"
+                        className="rounded whitespace-nowrap data-[state=active]:bg-blue-100 data-[state=active]:text-blue-600"
+                      >
                         <FaBroom className="mr-2" />
                         Cleaning Services
                       </TabsTrigger>
