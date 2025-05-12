@@ -21,6 +21,7 @@ const Sidebar = () => {
         { href: '/admin/dashboard/translation-services/faq', label: 'Manage Translation FAQ' },
         { href: '/admin/dashboard/translation-services/languages', label: 'Manage Languages' },
         { href: '/admin/dashboard/translation-services/services', label: 'Manage Services' },
+        { href: '/admin/dashboard/translation-services/translation-options', label: 'Manage Translation Options' },
       ],
     },
     {

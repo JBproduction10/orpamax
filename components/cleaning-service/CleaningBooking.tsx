@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
+import { toast } from 'sonner'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { Button } from '../ui/button'
 import { Calendar } from '@/components/ui/calendar'
@@ -25,30 +26,29 @@ import { Textarea } from '../ui/textarea'
 import { format } from 'date-fns'
 
 // Mapped data
-
 const timeOptions = [
   { value: 'morning', label: 'Morning (8:00 AM - 12:00 PM)' },
   { value: 'afternoon', label: 'Afternoon (12:00 PM - 4:00 PM)' },
   { value: 'evening', label: 'Evening (4:00 PM - 8:00 PM)' },
-];
+]
 
 const serviceOptions = [
   { value: 'standard', label: 'Standard Clean' },
   { value: 'deep', label: 'Deep Clean' },
   { value: 'move', label: 'Move-In/Out Clean' },
   { value: 'office', label: 'Office Clean' },
-];
+]
 
 type CleaningBookingProps = {
-  selectedDate: Date | undefined;
-  setSelectedDate: (date: Date | undefined) => void;
-  selectedTime: string;
-  setSelectedTime: (value: string) => void;
-  selectedService: string;
-  setSelectedService: (value: string) => void;
-  message: string;
-  setMessage: (value: string) => void;
-};
+  selectedDate: Date | undefined
+  setSelectedDate: (date: Date | undefined) => void
+  selectedTime: string
+  setSelectedTime: (value: string) => void
+  selectedService: string
+  setSelectedService: (value: string) => void
+  message: string
+  setMessage: (value: string) => void
+}
 
 const CleaningBooking: React.FC<CleaningBookingProps> = ({
   selectedDate,
@@ -61,14 +61,14 @@ const CleaningBooking: React.FC<CleaningBookingProps> = ({
   setMessage,
 }) => {
   const handleFormSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
     const formData = {
-      selectedDate: selectedDate,
-      selectedTime: selectedTime,
-      selectedService: selectedService,
-      message: message,
-    };
+      selectedDate,
+      selectedTime,
+      selectedService,
+      message,
+    }
 
     try {
       const response = await fetch('/api/send-cleaning-booking-request', {
@@ -77,18 +77,22 @@ const CleaningBooking: React.FC<CleaningBookingProps> = ({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
-      });
+      })
 
       if (response.ok) {
-        alert('Your booking request has been sent successfully!');
+        toast.success('Your booking request has been sent successfully!')
+        setSelectedDate(undefined)
+        setSelectedTime('')
+        setSelectedService('')
+        setMessage('')
       } else {
-        alert('There was an error sending your booking request.');
+        toast.error('There was an error sending your booking request.')
       }
     } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred while sending the request.');
+      console.error('Error:', error)
+      toast.error('An error occurred while sending the request.')
     }
-  };
+  }
 
   return (
     <div className="container mx-auto px-4 py-16">
@@ -182,7 +186,7 @@ const CleaningBooking: React.FC<CleaningBookingProps> = ({
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CleaningBooking;
+export default CleaningBooking
