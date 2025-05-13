@@ -53,6 +53,7 @@ const Sidebar = () => {
       key: 'settings',
       links: [
         { href: '/admin/dashboard/home/hero', label: 'Home Hero Section' },
+        { href: '/admin/dashboard/home/home-services', label: 'Home Our Services Section' },
         { href: '/admin/dashboard/footer', label: 'Footer Section' },
       ],
     },
@@ -113,9 +114,8 @@ const Sidebar = () => {
                 )}
               </button>
               <ul
-                className={`mt-2 pl-4 space-y-1 overflow-hidden transition-all duration-300 ease-in-out ${
-                  openDropdown === key ? 'max-h-40' : 'max-h-0'
-                }`}
+                className={`mt-2 pl-4 space-y-1 overflow-hidden transition-all duration-300 ease-in-out ${openDropdown === key ? 'max-h-40' : 'max-h-0'
+                  }`}
               >
                 {links.map(({ href, label }) => (
                   <li key={href}>

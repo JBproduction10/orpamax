@@ -4,7 +4,10 @@ import useSWR from 'swr';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
-const fetcher = (url: string) => fetch(url).then(res => res.json());
+const fetcher = (url: string) =>
+  fetch(url)
+    .then(res => res.json())
+    .then(data => data.services); // ✅ Extract only the array
 
 const CleaningServicesAdminList = () => {
   const { data: services, mutate } = useSWR('/api/admin/cleaning/services', fetcher);
@@ -24,7 +27,7 @@ const CleaningServicesAdminList = () => {
         </Link>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {services?.map((service: any) => (
+        {Array.isArray(services) && services.map((service: any) => (
           <div key={service._id} className="border rounded p-4 space-y-2 shadow">
             <img src={service.imageUrl.secure_url} alt="" className="h-48 w-full object-cover rounded" />
             <h3 className="text-xl font-semibold">{service.title}</h3>

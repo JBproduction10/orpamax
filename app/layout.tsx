@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     siteName: "Orpamax",
     images: [
       {
-        url: "https://orpamax.com/og-image.png",
+        url: "https://orpamax.com/",
         width: 1200,
         height: 630,
         alt: "Orpamax Logo",

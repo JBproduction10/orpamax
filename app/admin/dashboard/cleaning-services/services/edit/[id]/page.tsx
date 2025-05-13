@@ -74,7 +74,7 @@ const EditCleaningService = () => {
           </div>
 
           {/* Icon Selection */}
-          <div>
+          {/* <div>
             <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Select Icon</label>
             <select
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100"
@@ -86,7 +86,7 @@ const EditCleaningService = () => {
                 <option key={key} value={key}>{key}</option>
               ))}
             </select>
-          </div>
+          </div> */}
 
           {/* Image Upload */}
           <div>

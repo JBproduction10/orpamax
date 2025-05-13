@@ -78,7 +78,7 @@ const CleaningServices = () => {
                 >
                     <div className="h-48 overflow-hidden">
                     <img
-                        src={service.imageUrl}
+                        src={service.imageUrl?.secure_url}
                         alt={service.title}
                         className="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
                     />

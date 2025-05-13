@@ -6,8 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { iconOptions } from '@/lib/constants/icons';
 import { Label } from '@/components/ui/label';
+import { toast } from 'sonner'; // ✅ Sonner toast
 
 const CreateCleaningService = () => {
   const router = useRouter();
@@ -53,6 +53,20 @@ const CreateCleaningService = () => {
     }
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file && file.size > 5 * 1024 * 1024) {
+      toast.error('Image must be less than 5MB');
+      setImageFile(null);
+      setPreviewUrl('');
+      return;
+    }
+
+    setImageFile(file || null);
+    setPreviewUrl(file ? URL.createObjectURL(file) : '');
+  };
+
   return (
     <Card className="max-w-2xl mx-auto mt-8 shadow-xl rounded-2xl">
       <CardHeader>
@@ -81,31 +95,12 @@ const CreateCleaningService = () => {
           </div>
 
           <div>
-            <Label htmlFor="icon">Icon</Label>
-            <select
-              id="icon"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={icon}
-              onChange={(e) => setIcon(e.target.value)}
-            >
-              <option value="">Select an icon</option>
-              {Object.keys(iconOptions).map((key) => (
-                <option key={key} value={key}>{key}</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
             <Label htmlFor="image">Image</Label>
             <Input
               id="image"
               type="file"
               accept="image/*"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                setImageFile(file || null);
-                setPreviewUrl(file ? URL.createObjectURL(file) : '');
-              }}
+              onChange={handleImageChange}
             />
             {previewUrl && (
               <img
