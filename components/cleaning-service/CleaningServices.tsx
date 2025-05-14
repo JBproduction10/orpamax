@@ -15,9 +15,12 @@ type Service = {
   _id: string;
   title: string;
   description: string;
-  imageUrl: string;
+  imageUrl: {
+    secure_url: string;
+  };
   iconName: string;
 };
+
 
 const iconMap: Record<string, React.ElementType> = {
   FaHome,

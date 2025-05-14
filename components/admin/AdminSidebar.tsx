@@ -46,6 +46,7 @@ const Sidebar = () => {
       key: 'contact',
       links: [
         { href: '/admin/dashboard/contact-us/contact-info', label: 'Manage Contact Info' },
+        { href: '/admin/dashboard/contact-us/business-info', label: 'Manage Business Info' },
       ],
     },
     {

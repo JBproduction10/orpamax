@@ -3,6 +3,7 @@ import { Afacad, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import SessionProviderWrapper from "./providers/SessionProviderWrapper";
+import Head from "next/head";
 
 // Fonts
 const geistSans = Geist({
@@ -66,6 +67,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${afacad.variable}`}>
+      <Head>
+        <script
+          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAP_API_KEY}&libraries=maps,marker`}
+          async
+          defer
+        />
+      </Head>
       <body>
         <SessionProviderWrapper>
           {/* <Navbar /> */}
