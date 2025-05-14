@@ -153,14 +153,14 @@ const Page = () => {
                         value="translation"
                         className="rounded whitespace-nowrap data-[state=active]:bg-blue-100 data-[state=active]:text-blue-600"
                       >
-                        <FaLanguage className="mr-2" />
+                        {/* <FaLanguage className="mr-2" /> */}
                         Translation Services
                       </TabsTrigger>
                       <TabsTrigger
                         value="cleaning"
                         className="rounded whitespace-nowrap data-[state=active]:bg-blue-100 data-[state=active]:text-blue-600"
                       >
-                        <FaBroom className="mr-2" />
+                        {/* <FaBroom className="mr-2" /> */}
                         Cleaning Services
                       </TabsTrigger>
                     </TabsList>

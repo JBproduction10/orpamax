@@ -6,10 +6,12 @@ import { fetcher } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../ui/card';
 import { FaHome, FaBuilding, FaBroom, FaTruckMoving } from 'react-icons/fa';
-import deepClean from "@/public/assets/images/deep-cleaning.jpg"
-import commercialClean from "@/public/assets/images/cleaning-office.jpg"
-import homeClean from "@/public/assets/images/cleaning.jpg"
-import moveClean from "@/public/assets/images/post-construction.jpg"
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/effect-fade';
 
 type Service = {
   _id: string;
@@ -21,7 +23,6 @@ type Service = {
   iconName: string;
 };
 
-
 const iconMap: Record<string, React.ElementType> = {
   FaHome,
   FaBuilding,
@@ -30,84 +31,68 @@ const iconMap: Record<string, React.ElementType> = {
 };
 
 const CleaningServices = () => {
-  const { data, error, isLoading } = useSWR<{ services: Service[] }>('/api/cleaning/services', fetcher);
+  const { data } = useSWR<{ services: Service[] }>('/api/cleaning/services', fetcher);
   const cleaningServices = data?.services ?? [];
-    // const cleaningServices = [
-    //     {
-    //       title: "Residential Cleaning",
-    //       description:
-    //         "Comprehensive home cleaning services tailored to your needs",
-    //       icon: <FaHome/>,
-    //       imageUrl:homeClean.src,
-    //     },
-    //     {
-    //       title: "Commercial Cleaning",
-    //       description:
-    //         "Professional cleaning solutions for offices and business spaces",
-    //       icon: <FaBuilding/>,
-    //       imageUrl: commercialClean.src,
-    //     },
-    //     {
-    //       title: "Deep Cleaning",
-    //       description: "Intensive cleaning service addressing hard-to-reach areas",
-    //       icon: <FaBroom/>,
-    //       imageUrl: deepClean.src,
-    //     },
-    //     {
-    //       title: "Move-in/Move-out Cleaning",
-    //       description:
-    //         "Specialized cleaning for property transitions and real estate",
-    //       icon: <FaTruckMoving/>,
-    //       imageUrl: moveClean.src,
-    //     },
-    //   ];
-      
-    return (
-        <div className="container mx-auto px-4 py-16">
-            <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold mb-4">
-                    Our Cleaning Services
-                </h2>
-                <p className="text-gray-600 max-w-2xl mx-auto">
-                    We offer a comprehensive range of cleaning services to meet
-                    your specific needs.
-                </p>
-            </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                {cleaningServices.map((service, index) => (
-                <Card
-                    key={index}
-                    className="border-2 border-blue-100 hover:border-blue-300 transition-all duration-300 cursor-pointer overflow-hidden"
-                >
-                    <div className="h-48 overflow-hidden">
-                    <img
-                        src={service.imageUrl?.secure_url}
-                        alt={service.title}
-                        className="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
-                    />
-                    </div>
-                    <CardHeader>
-                    <CardTitle className="flex items-center">
-                        <i className={`$ text-blue-600 mr-2`}>{service.iconName}</i>
-                        {service.title}
-                    </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                    <p className="text-gray-600">{service.description}</p>
-                    </CardContent>
-                    <CardFooter>
-                    <Button
-                        variant="outline"
-                        className="w-full !rounded-button whitespace-nowrap"
-                    >
-                        Learn More
-                    </Button>
-                    </CardFooter>
-                </Card>
-                ))}
-            </div>
-        </div>
-    )
-}
+
+  return (
+    <div className="container mx-auto px-4 py-16">
+      <div className="text-center mb-12">
+        <h2 className="text-3xl font-bold mb-4">Our Cleaning Services</h2>
+        <p className="text-gray-600 max-w-2xl mx-auto">
+          We offer a comprehensive range of cleaning services to meet your specific needs.
+        </p>
+      </div>
+
+      <Swiper
+        modules={[Navigation, Pagination, Autoplay, EffectFade]}
+        spaceBetween={24}
+        slidesPerView={1}
+        loop={true}
+        effect="fade"
+        autoplay={{ delay: 3000, disableOnInteraction: false }}
+        navigation
+        pagination={{ clickable: true }}
+        breakpoints={{
+          640: { slidesPerView: 1 },
+          768: { slidesPerView: 2 },
+          1024: { slidesPerView: 3 },
+          1280: { slidesPerView: 4 },
+        }}
+      >
+        {cleaningServices.map((service, index) => {
+          const Icon = iconMap[service.iconName] || FaHome;
+
+          return (
+            <SwiperSlide key={index}>
+              <Card className="border-2 border-blue-100 hover:border-blue-300 transition-all duration-300 cursor-pointer overflow-hidden">
+                <div className="h-48 overflow-hidden">
+                  <img
+                    src={service.imageUrl?.secure_url}
+                    alt={service.title}
+                    className="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
+                  />
+                </div>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Icon className="text-blue-600 mr-2" />
+                    {service.title}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600">{service.description}</p>
+                </CardContent>
+                <CardFooter>
+                  <Button variant="outline" className="w-full !rounded-button whitespace-nowrap">
+                    Learn More
+                  </Button>
+                </CardFooter>
+              </Card>
+            </SwiperSlide>
+          );
+        })}
+      </Swiper>
+    </div>
+  );
+};
 
 export default CleaningServices;
