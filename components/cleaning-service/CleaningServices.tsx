@@ -46,7 +46,7 @@ const CleaningServices = () => {
       <Swiper
         modules={[Navigation, Pagination, Autoplay, EffectFade]}
         spaceBetween={24}
-        slidesPerView={1}
+        slidesPerView={4}
         loop={true}
         effect="fade"
         autoplay={{ delay: 3000, disableOnInteraction: false }}
