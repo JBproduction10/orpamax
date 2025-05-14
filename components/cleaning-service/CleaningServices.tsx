@@ -45,17 +45,16 @@ const CleaningServices = () => {
 
       <Swiper
         modules={[Navigation, Pagination, Autoplay, EffectFade]}
-        spaceBetween={8}
-        slidesPerView={4}
+        spaceBetween={24}
+        slidesPerView={1}
         loop={true}
-        effect="fade"
         autoplay={{ delay: 3000, disableOnInteraction: false }}
         navigation
         pagination={{ clickable: true }}
         breakpoints={{
           640: { slidesPerView: 1 },
           768: { slidesPerView: 2 },
-          1024: { slidesPerView: 4 },
+          1024: { slidesPerView: 3 },
           1280: { slidesPerView: 4 },
         }}
       >

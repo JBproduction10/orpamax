@@ -5,6 +5,13 @@ import useSWR from 'swr';
 import { Button } from '../ui/button';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../ui/card';
 import { iconOptions } from '@/lib/constants/icons';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/effect-fade';
+
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
@@ -32,44 +39,60 @@ const TranslationServices = () => {
           We offer a comprehensive range of translation services to meet your specific needs.
         </p>
       </div>
+      <Swiper
+        modules={[Navigation, Pagination, Autoplay]}
+          spaceBetween={24}
+          slidesPerView={1}
+          loop={true}
+          autoplay={{ delay: 3000, disableOnInteraction: false }}
+          navigation
+          pagination={{ clickable: true }}
+          breakpoints={{
+            640: { slidesPerView: 1 },
+            768: { slidesPerView: 2 },
+            1024: { slidesPerView: 3 },
+            1280: { slidesPerView: 4 },
+        }}
+      >
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {services.map((service: any) => {
+          //   const Icon = iconOptions[service.icon] || iconOptions['FaFileAlt'];
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-        {services.map((service: any) => {
-        //   const Icon = iconOptions[service.icon] || iconOptions['FaFileAlt'];
+            return (
+              <SwiperSlide key={service._id}>
+                <Card
+                  className="border-2 border-blue-100 hover:border-blue-300 transition-all duration-300 cursor-pointer overflow-hidden"
+                >
+                  <div className="h-48 overflow-hidden">
+                    <img
+                      src={service.imageUrl.secure_url}
+                      alt={service.title}
+                      className="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
+                    />
+                  </div>
 
-          return (
-            <Card
-              key={service._id}
-              className="border-2 border-blue-100 hover:border-blue-300 transition-all duration-300 cursor-pointer overflow-hidden"
-            >
-              <div className="h-48 overflow-hidden">
-                <img
-                  src={service.imageUrl.secure_url}
-                  alt={service.title}
-                  className="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
-                />
-              </div>
+                  <CardHeader>
+                    <CardTitle className="flex items-center">
+                      {/* <i className="text-blue-600 mr-2">
+                        <Icon className="w-5 h-5" />
+                      </i> */}
+                      {service.title}
+                    </CardTitle>
+                  </CardHeader>
 
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  {/* <i className="text-blue-600 mr-2">
-                    <Icon className="w-5 h-5" />
-                  </i> */}
-                  {service.title}
-                </CardTitle>
-              </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-600">{service.description}</p>
+                  </CardContent>
 
-              <CardContent>
-                <p className="text-gray-600">{service.description}</p>
-              </CardContent>
-
-              <CardFooter className="flex flex-col gap-2">
-                <Button variant="outline" className="w-full">Learn More</Button>
-              </CardFooter>
-            </Card>
-          );
-        })}
-      </div>
+                  <CardFooter className="flex flex-col gap-2">
+                    <Button variant="outline" className="w-full">Learn More</Button>
+                  </CardFooter>
+                </Card>
+              </SwiperSlide>
+            );
+          })}
+        </div>
+      </Swiper>
     </div>
   );
 };
