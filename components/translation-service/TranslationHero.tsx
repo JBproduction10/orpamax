@@ -22,7 +22,7 @@ export default function TranslationHeroSwiper() {
 
   return (
     <Swiper
-      modules={[Autoplay]}
+      modules={[Autoplay, Pagination]}
       loop={slides.length > 1}
       pagination={{ clickable: true }}
       autoplay={{

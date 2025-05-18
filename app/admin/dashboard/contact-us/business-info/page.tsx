@@ -1,100 +1,78 @@
 'use client'
-import React, { useEffect, useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { FaClock, FaMapMarker, FaDirections } from 'react-icons/fa';
-import axios from 'axios';
 
-const BusinessInfoPage = () => {
-  const [businessInfo, setBusinessInfo] = useState<any>(null);
+import useSWR from 'swr'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 
-  useEffect(() => {
-    const fetchBusinessInfo = async () => {
-      const response = await axios.get('/api/admin/contact/business-info');
-      setBusinessInfo(response.data);
-    };
-    fetchBusinessInfo();
-  }, []);
+type BusinessHour = { day: string; open: string; close: string }
+type Location = { address: string; city: string; state: string; lat: number; lng: number }
 
-  if (!businessInfo) return <p>Loading...</p>;
+type BusinessInfo = {
+  _id: string
+  hours: BusinessHour[]
+  holidayHours: string
+  emergencyMessage: string
+  location?: Location
+}
+
+const fetcher = (url: string): Promise<BusinessInfo[]> =>
+  fetch(url).then(res => res.json())
+
+export default function BusinessInfoList() {
+  const { data, mutate, isLoading } = useSWR<BusinessInfo[]>('/api/admin/contact/business-info', fetcher)
+
+  const handleDelete = async (id: string) => {
+    await fetch(`/api/admin/contact/business-info/${id}`, { method: 'DELETE' })
+    mutate()
+  }
+
+  const validData = data?.filter(
+    item => item.location?.address && item.location?.city && item.hours.length > 0
+  )
 
   return (
-    <div className="bg-gray-50 py-16">
-      <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
-          {/* Business Hours */}
-          <div>
-            <h2 className="text-3xl font-bold mb-6">Business Hours</h2>
-            <Card className="border-2 border-blue-100">
-              <CardContent className="pt-6">
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center pb-2 border-b border-gray-100">
-                    <div className="flex items-center">
-                      <FaClock className="text-blue-600 mr-3" />
-                      <span className="font-medium">Monday - Friday</span>
-                    </div>
-                    <span>{businessInfo.hours.mondayToFriday}</span>
-                  </div>
-                  <div className="flex justify-between items-center pb-2 border-b border-gray-100">
-                    <div className="flex items-center">
-                      <FaClock className="text-blue-600 mr-3" />
-                      <span className="font-medium">Saturday</span>
-                    </div>
-                    <span>{businessInfo.hours.saturday}</span>
-                  </div>
-                  <div className="flex justify-between items-center pb-2 border-b border-gray-100">
-                    <div className="flex items-center">
-                      <FaClock className="text-blue-600 mr-3" />
-                      <span className="font-medium">Sunday</span>
-                    </div>
-                    <span>{businessInfo.hours.sunday}</span>
-                  </div>
-                </div>
-                <div className="mt-6">
-                  <h3 className="text-lg font-medium mb-3">Holiday Hours</h3>
-                  <p className="text-gray-600">{businessInfo.hours.holidayHours}</p>
-                </div>
-                <div className="mt-6">
-                  <h3 className="text-lg font-medium mb-3">Emergency Services</h3>
-                  <p className="text-gray-600">{businessInfo.hours.emergencyServices || 'Not available'}</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+    <div className="p-6 max-w-6xl mx-auto">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-semibold">Business Info</h1>
+        <Link href="/admin/dashboard/contact-us/business-info/create">
+          <Button>Add New</Button>
+        </Link>
+      </div>
 
-          {/* Map Location */}
-          <div>
-            <h2 className="text-3xl font-bold mb-6">Find Us</h2>
-            <Card className="border-2 border-blue-100 overflow-hidden">
-              <div className="h-[300px] bg-gray-200 relative">
-                <img
-                  src={businessInfo.location.mapImage}
-                  alt="Office Location Map"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="bg-white p-3 rounded-lg shadow-lg">
-                    <FaMapMarker className="text-red-500 text-2xl" />
-                  </div>
-                </div>
-              </div>
-              <CardContent className="py-4">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="font-medium">{businessInfo.location.address}</p>
-                  </div>
-                  <Button size="sm" className="!rounded-button whitespace-nowrap">
-                    <FaDirections className="mr-2" />
-                    Directions
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+      {isLoading && (
+        <div className="space-y-4">
+          {[...Array(3)].map((_, i) => (
+            <Skeleton key={i} className="h-28 w-full rounded-xl" />
+          ))}
         </div>
+      )}
+
+      {validData?.length === 0 && (
+        <p className="text-muted-foreground text-center mt-10">No valid business entries found.</p>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {validData?.map(item => (
+          <Card key={item._id}>
+            <CardHeader>
+              <CardTitle className="text-lg">{item.location!.address}, {item.location!.city}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <p><strong>Open Days:</strong> {item.hours.length}</p>
+              <div className="flex gap-2">
+                <Link href={`/admin/dashboard/contact-us/business-info/edit/${item._id}`}>
+                  <Button size="sm">Edit</Button>
+                </Link>
+                <Button size="sm" variant="destructive" onClick={() => handleDelete(item._id)}>
+                  Delete
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
     </div>
-  );
-};
-
-export default BusinessInfoPage;
+  )
+}

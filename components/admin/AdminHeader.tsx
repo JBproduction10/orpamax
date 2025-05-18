@@ -13,6 +13,7 @@ const Header = () => {
         <Link href="/translation-services" className="text-gray-600 hover:text-gray-900">Translation Services</Link>
         <Link href="/cleaning-services" className="text-gray-600 hover:text-gray-900">Cleaning Services</Link>
         <Link href="/contact-us" className="text-gray-600 hover:text-gray-900">Contact Us</Link>
+        <Link href="/about-us" className="text-gray-600 hover:text-gray-900">About Us</Link>
         {/* <button className="text-gray-600 hover:text-gray-900">Notifications</button>
         <button className="text-gray-600 hover:text-gray-900">Profile</button> */}
         <button 

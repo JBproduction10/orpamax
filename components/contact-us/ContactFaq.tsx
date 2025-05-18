@@ -1,6 +1,15 @@
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@radix-ui/react-accordion';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button';
+import { FaQuestion } from 'react-icons/fa';
+
+interface Faq {
+  _id: string;
+  category: string;
+  question: string;
+  answer: string;
+}
+
 
 const faqItems = [
     {
@@ -36,44 +45,68 @@ const faqItems = [
   ];
 
 const ContactFaq = () => {
-    return (
-        <div className="container mx-auto px-4 py-16">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">
-                Frequently Asked Questions
-              </h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
-                Find quick answers to common questions about our services.
-              </p>
-            </div>
-            <Accordion type="single" collapsible className="w-full">
-              {faqItems.map((item, index) => (
-                <AccordionItem
-                  key={index}
-                  value={`item-${index}`}
-                  className="border-b border-blue-100"
-                >
-                  <AccordionTrigger className="text-left font-medium hover:text-blue-600 py-4">
-                    {item.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-gray-600 pb-4">
-                    {item.answer}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-            <div className="mt-8 text-center">
-              <p className="text-gray-600 mb-4">
-                Don't see your question here?
-              </p>
-              <Button className="!rounded-button whitespace-nowrap">
-                <i className="fas fa-question-circle mr-2"></i> Ask a Question
-              </Button>
-            </div>
-          </div>
+  const [faqs, setFaqs] = useState<Faq[]>([])
+  const [categories, setCategories] = useState<string[]>([]);
+  const [groupedFaqs, setGroupedFaqs] = useState<Record<string, Faq[]>>({});
+  const [activeTab, setActiveTab] = useState<string>('');
+
+  useEffect(() => {
+    fetch("/api/contact-us/faq")
+      .then((res) => res.json())
+      .then((data: Faq[]) => {
+        const groups: Record<string, Faq[]> = {};
+        data.forEach((faq) => {
+          const category = faq.category.toLowerCase();
+          if (!groups[category]) groups[category] = [];
+          groups[category].push(faq);
+        });
+
+        const uniqueCategories = Object.keys(groups);
+        setFaqs(data);
+        setGroupedFaqs(groups);
+        setCategories(uniqueCategories);
+        setActiveTab(uniqueCategories[0]);
+      })
+  }, [])
+  
+  return (
+    <div className="container mx-auto px-4 py-16">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold mb-4">
+            Frequently Asked Questions
+          </h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Find quick answers to common questions about our services.
+          </p>
         </div>
-    )
+        <Accordion type="single" collapsible className="w-full">
+          {faqs.map((item, index) => (
+            <AccordionItem
+              key={index}
+              value={`item-${index}`}
+              className="border-b border-blue-100"
+            >
+              <AccordionTrigger className="text-left font-medium hover:text-blue-600 py-4">
+                {item.question}
+              </AccordionTrigger>
+              <AccordionContent className="text-gray-600 pb-4">
+                {item.answer}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+        <div className="mt-8 text-center">
+          <p className="text-gray-600 mb-4">
+            Don't see your question here?
+          </p>
+          <Button className="!rounded-button whitespace-nowrap">
+            <FaQuestion className="fas fa-question-circle mr-2"/> Ask a Question
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export default ContactFaq;

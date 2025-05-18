@@ -1,4 +1,38 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+
+type Goal = {
+  _id: string;
+  type: 'vision' | 'mission';
+  title: string;
+  description: string;
+  imageUrl: {
+    secure_url: string;
+    public_id: string;
+  };
+};
+
 const AboutGoal = () => {
+  const [vision, setVision] = useState<Goal | null>(null);
+  const [mission, setMission] = useState<Goal | null>(null);
+
+  useEffect(() => {
+    const fetchGoals = async () => {
+      try {
+        const res = await fetch('/api/about/about-goal');
+        const data: Goal[] = await res.json();
+
+        setVision(data.find(goal => goal.type === 'vision') || null);
+        setMission(data.find(goal => goal.type === 'mission') || null);
+      } catch (error) {
+        console.error('Failed to fetch goals:', error);
+      }
+    };
+
+    fetchGoals();
+  }, []);
+
   return (
     <section className="bg-gray-50 py-20 px-6 sm:px-10 lg:px-32">
       <div className="text-center mb-16">
@@ -10,34 +44,34 @@ const AboutGoal = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto">
         {/* Vision */}
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl">
-          <img
-            src="/assets/images/goal.jpg"
-            alt="Our Vision"
-            className="w-full h-64 object-cover"
-          />
-          <div className="p-6 text-center">
-            <h4 className="text-2xl font-semibold text-gray-800 mb-2">Our Vision</h4>
-            <p className="text-gray-600">
-              To deliver exceptional commercial cleaning and translation services that enhance the well-being, safety, and communication of our clients, while fostering a cleaner, more connected world.
-            </p>
+        {vision && (
+          <div className="bg-white rounded-2xl shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl">
+            <img
+              src={vision.imageUrl.secure_url}
+              alt={vision.title}
+              className="w-full h-64 object-cover"
+            />
+            <div className="p-6 text-center">
+              <h4 className="text-2xl font-semibold text-gray-800 mb-2">{vision.title}</h4>
+              <p className="text-gray-600">{vision.description}</p>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Mission */}
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl">
-          <img
-            src="/assets/images/vision.jpg"
-            alt="Our Mission"
-            className="w-full h-64 object-cover"
-          />
-          <div className="p-6 text-center">
-            <h4 className="text-2xl font-semibold text-gray-800 mb-2">Our Mission</h4>
-            <p className="text-gray-600">
-              To be a trusted partner for businesses and communities, known for excellence in cleaning and seamless multilingual communication, helping organizations thrive in a clean, inclusive environment.
-            </p>
+        {mission && (
+          <div className="bg-white rounded-2xl shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl">
+            <img
+              src={mission.imageUrl.secure_url}
+              alt={mission.title}
+              className="w-full h-64 object-cover"
+            />
+            <div className="p-6 text-center">
+              <h4 className="text-2xl font-semibold text-gray-800 mb-2">{mission.title}</h4>
+              <p className="text-gray-600">{mission.description}</p>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

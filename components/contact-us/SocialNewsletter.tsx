@@ -1,7 +1,9 @@
+'use client'
 import React from 'react'
 import { Button } from '@/components/ui/button';
 import { FaFacebook, FaInstagram, FaLinkedin, FaEnvelope } from 'react-icons/fa';
 import { Input } from '../ui/input';
+import SocialMedia from './SocialMedia';
 
 const SocialNewsletter = () => {
     return (
@@ -15,32 +17,7 @@ const SocialNewsletter = () => {
                     Follow us on social media for updates, tips, and special
                     offers.
                   </p>
-                  <div className="grid grid-cols-4 gap-4">
-                    <a href="#" className="flex flex-col items-center">
-                      <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center mb-2 hover:bg-blue-700 transition-colors cursor-pointer">
-                        <FaFacebook className="fab fa-facebook-f text-white"/>
-                      </div>
-                      <span className="text-sm">Facebook</span>
-                    </a>
-                    {/* <a href="#" className="flex flex-col items-center">
-                      <div className="w-12 h-12 rounded-full bg-blue-400 flex items-center justify-center mb-2 hover:bg-blue-500 transition-colors cursor-pointer">
-                        <i className="fab fa-twitter text-white"></i>
-                      </div>
-                      <span className="text-sm">Twitter</span>
-                    </a> */}
-                    <a href="#" className="flex flex-col items-center">
-                      <div className="w-12 h-12 rounded-full bg-pink-600 flex items-center justify-center mb-2 hover:bg-pink-700 transition-colors cursor-pointer">
-                        <FaInstagram className="fab fa-instagram text-white"/>
-                      </div>
-                      <span className="text-sm">Instagram</span>
-                    </a>
-                    <a href="#" className="flex flex-col items-center">
-                      <div className="w-12 h-12 rounded-full bg-blue-800 flex items-center justify-center mb-2 hover:bg-blue-900 transition-colors cursor-pointer">
-                        <FaLinkedin className="fab fa-linkedin-in text-white"/>
-                      </div>
-                      <span className="text-sm">LinkedIn</span>
-                    </a>
-                  </div>
+                  <SocialMedia/>
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold mb-6">

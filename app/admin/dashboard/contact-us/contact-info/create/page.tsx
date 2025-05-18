@@ -1,101 +1,83 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card } from '@/components/ui/card';
 
 export default function CreateContactInfo() {
-  const [form, setForm] = useState({
-    type: "",
-    title: "",
-    description: "",
-    icon: "",
-    details: [""],
-  });
-
   const router = useRouter();
+  const [form, setForm] = useState({ type: '', title: '', description: '', lines: [''] });
 
-  const handleChange = (field: string, value: string | string[]) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+  const addLine = () => {
+    setForm({ ...form, lines: [...form.lines, ''] });
+  };
+
+  const removeLine = (index: number) => {
+    const lines = form.lines.filter((_, i) => i !== index);
+    setForm({ ...form, lines });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await fetch("/api/admin/contact/contact-info", {
-      method: "POST",
+    await fetch('/api/admin/contact/contact-info', {
+      method: 'POST',
       body: JSON.stringify(form),
     });
-    router.push("/admin/dashboard/contact-us/contact-info");
+    router.push('/admin/dashboard/contact-us/contact-info');
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h2 className="text-2xl font-semibold mb-6 text-gray-800">Add New Contact Info</h2>
-      <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-2xl shadow-md">
-        {/* Type */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
-          <input
-            type="text"
-            placeholder="e.g., visit, call, email"
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
-            onChange={(e) => handleChange("type", e.target.value)}
-          />
+    <Card className="max-w-2xl mx-auto mt-8 p-6">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <h2 className="text-xl font-semibold">Create Contact Info</h2>
+
+        <div className="space-y-1">
+          <Label>Type (visit, call, email)</Label>
+          <Input value={form.type} onChange={e => setForm({ ...form, type: e.target.value })} />
         </div>
 
-        {/* Title */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-          <input
-            type="text"
-            placeholder="Enter title"
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
-            onChange={(e) => handleChange("title", e.target.value)}
-          />
+        <div className="space-y-1">
+          <Label>Title</Label>
+          <Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
         </div>
 
-        {/* Description */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-          <input
-            type="text"
-            placeholder="Short description"
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
-            onChange={(e) => handleChange("description", e.target.value)}
-          />
+        <div className="space-y-1">
+          <Label>Description</Label>
+          <Input value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} />
         </div>
 
-        {/* Icon */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Icon (Lucide name)</label>
-          <input
-            type="text"
-            placeholder="e.g., map, phone, mail"
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
-            onChange={(e) => handleChange("icon", e.target.value)}
-          />
+        <div className="space-y-2">
+          <Label>Lines</Label>
+          {form.lines.map((line, i) => (
+            <div key={i} className="flex gap-2">
+              <Input
+                className="flex-1"
+                placeholder={`Line ${i + 1}`}
+                value={line}
+                onChange={e => {
+                  const lines = [...form.lines];
+                  lines[i] = e.target.value;
+                  setForm({ ...form, lines });
+                }}
+              />
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={() => removeLine(i)}
+                disabled={form.lines.length === 1}
+              >
+                Remove
+              </Button>
+            </div>
+          ))}
+          <Button type="button" variant="outline" onClick={addLine}>+ Add Line</Button>
         </div>
 
-        {/* Details */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Details</label>
-          <textarea
-            placeholder="Enter each detail separated by a comma"
-            className="w-full px-4 py-2 border rounded-lg resize-none focus:outline-none focus:ring focus:border-blue-500"
-            rows={4}
-            onChange={(e) => handleChange("details", e.target.value.split(","))}
-          />
-          <p className="text-xs text-gray-500 mt-1">Separate multiple items with commas (e.g., "123 Main St, New York, NY").</p>
-        </div>
-
-        <div className="pt-4">
-          <button
-            type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md transition-all duration-200"
-          >
-            Create Contact Info
-          </button>
-        </div>
+        <Button type="submit" className="w-full">Create</Button>
       </form>
-    </div>
+    </Card>
   );
 }

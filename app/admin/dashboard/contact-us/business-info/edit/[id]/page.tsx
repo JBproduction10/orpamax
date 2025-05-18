@@ -1,154 +1,140 @@
 'use client'
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { FaClock, FaMapMarker } from 'react-icons/fa';
-import axios from 'axios';
 
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { useEffect, useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import useSWR from 'swr'
 
-const mapContainerStyle = {
-  width: '100%',
-  height: '400px',
-};
+type BusinessHour = { day: string; open: string; close: string }
+type Location = { address: string; city: string; state: string; lat: number; lng: number }
 
-const MyMap = ({ center }: { center: { lat: number, lng: number } }) => (
-  <LoadScript googleMapsApiKey={`${process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY}`}>
-    <GoogleMap
-      mapContainerStyle={mapContainerStyle}
-      center={center}
-      zoom={10}
-    >
-      <Marker position={center} />
-    </GoogleMap>
-  </LoadScript>
-);
+type BusinessInfo = {
+  _id: string
+  hours: BusinessHour[]
+  holidayHours: string
+  emergencyMessage: string
+  location: Location
+}
 
-const UpdateBusinessInfoPage = () => {
-  const [businessInfo, setBusinessInfo] = useState<any>(null);
-  const [formData, setFormData] = useState<any>({
-    hours: {
-      mondayToFriday: '',
-      saturday: '',
-      sunday: '',
-      holidayHours: '',
-      emergencyServices: '',
-    },
-    location: {
-      address: '',
-      mapImage: '',
-    },
-  });
+const fetcher = (url: string): Promise<BusinessInfo> =>
+  fetch(url).then(res => res.json())
+
+export default function EditBusinessInfoPage() {
+  const { id } = useParams()
+  const router = useRouter()
+
+  const { data, isLoading } = useSWR<BusinessInfo>(id ? `/api/admin/contact/business-info/${id}` : null, fetcher)
+
+  const [form, setForm] = useState<BusinessInfo | null>(null)
 
   useEffect(() => {
-    const fetchBusinessInfo = async () => {
-      const response = await axios.get('/api/admin/contact/business-info');
-      setBusinessInfo(response.data);
-      setFormData(response.data);
-    };
-    fetchBusinessInfo();
-  }, []);
+    if (data) {
+      // Ensure hours have Mon-Fri, Sat, Sun
+      const defaultHours = [
+        { day: 'Monday - Friday', open: '', close: '' },
+        { day: 'Saturday', open: '', close: '' },
+        { day: 'Sunday', open: '', close: '' },
+      ]
+      // Merge existing hours into defaultHours by day
+      const mergedHours = defaultHours.map(defHour => {
+        const found = data.hours.find(h => h.day === defHour.day)
+        return found || defHour
+      })
+      setForm({ ...data, hours: mergedHours })
+    }
+  }, [data])
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevData: any) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    if (!form) return
+    if (name.startsWith('location.')) {
+      const key = name.split('.')[1]
+      setForm({ ...form, location: { ...form.location, [key]: value } })
+    } else {
+      setForm({ ...form, [name]: value })
+    }
+  }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const response = await axios.put('/api/business-info/update', formData);
-    alert(response.data.message);
-  };
+  const handleHourChange = (index: number, field: keyof BusinessHour, value: string) => {
+    if (!form) return
+    const newHours = [...form.hours]
+    newHours[index] = { ...newHours[index], [field]: value }
+    setForm({ ...form, hours: newHours })
+  }
 
-  if (!businessInfo) return <p>Loading...</p>;
+  const handleSubmit = async () => {
+    await fetch(`/api/admin/contact/business-info/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    })
+    router.push('/admin/dashboard/contact-us/business-info')
+  }
+
+  if (isLoading || !form) return <div className="p-6">Loading...</div>
 
   return (
-    <form onSubmit={handleSubmit} className="p-8">
-      <h2 className="text-3xl font-bold mb-6">Update Business Info</h2>
+    <div className="max-w-2xl mx-auto p-6 space-y-4">
+      <h1 className="text-2xl font-semibold mb-2">Edit Business Info</h1>
 
-      {/* Business Hours Fields */}
-      <div className="space-y-4">
-        <label>
-          Monday - Friday:
-          <input
-            type="text"
-            name="hours.mondayToFriday"
-            value={formData.hours.mondayToFriday}
-            onChange={handleChange}
-            className="input"
-          />
-        </label>
-        <label>
-          Saturday:
-          <input
-            type="text"
-            name="hours.saturday"
-            value={formData.hours.saturday}
-            onChange={handleChange}
-            className="input"
-          />
-        </label>
-        <label>
-          Sunday:
-          <input
-            type="text"
-            name="hours.sunday"
-            value={formData.hours.sunday}
-            onChange={handleChange}
-            className="input"
-          />
-        </label>
-        <label>
-          Holiday Hours:
-          <input
-            type="text"
-            name="hours.holidayHours"
-            value={formData.hours.holidayHours}
-            onChange={handleChange}
-            className="input"
-          />
-        </label>
-        <label>
-          Emergency Services:
-          <input
-            type="text"
-            name="hours.emergencyServices"
-            value={formData.hours.emergencyServices}
-            onChange={handleChange}
-            className="input"
-          />
-        </label>
+      <div>
+        <Label>Address</Label>
+        <Input name="location.address" value={form.location.address} onChange={handleChange} />
+      </div>
+      <div>
+        <Label>City</Label>
+        <Input name="location.city" value={form.location.city} onChange={handleChange} />
+      </div>
+      <div>
+        <Label>State</Label>
+        <Input name="location.state" value={form.location.state} onChange={handleChange} />
+      </div>
+      <div className="grid grid-cols-2 gap-2">
+        <div>
+          <Label>Latitude</Label>
+          <Input name="location.lat" value={form.location.lat} onChange={handleChange} />
+        </div>
+        <div>
+          <Label>Longitude</Label>
+          <Input name="location.lng" value={form.location.lng} onChange={handleChange} />
+        </div>
       </div>
 
-      {/* Location Fields */}
-      <div className="space-y-4 mt-6">
-        <label>
-          Address:
-          <input
-            type="text"
-            name="location.address"
-            value={formData.location.address}
-            onChange={handleChange}
-            className="input"
-          />
-        </label>
-        <label>
-          Map Image URL:
-          <input
-            type="text"
-            name="location.mapImage"
-            value={formData.location.mapImage}
-            onChange={handleChange}
-            className="input"
-          />
-        </label>
+      <div>
+        <Label>Business Hours</Label>
+        {form.hours.map((hour, i) => (
+          <div key={hour.day} className="mb-4">
+            <p className="font-medium">{hour.day}</p>
+            <div className="grid grid-cols-2 gap-2 max-w-xs">
+              <Input
+                placeholder="Open"
+                value={hour.open}
+                onChange={e => handleHourChange(i, 'open', e.target.value)}
+              />
+              <Input
+                placeholder="Close"
+                value={hour.close}
+                onChange={e => handleHourChange(i, 'close', e.target.value)}
+              />
+            </div>
+          </div>
+        ))}
       </div>
 
-      <Button type="submit" className="mt-6">Save Changes</Button>
-    </form>
-  );
-};
+      <div>
+        <Label>Holiday Hours</Label>
+        <Textarea name="holidayHours" value={form.holidayHours} onChange={handleChange} />
+      </div>
 
-export default UpdateBusinessInfoPage;
+      <div>
+        <Label>Emergency Message</Label>
+        <Textarea name="emergencyMessage" value={form.emergencyMessage} onChange={handleChange} />
+      </div>
+
+      <Button onClick={handleSubmit}>Save</Button>
+    </div>
+  )
+}

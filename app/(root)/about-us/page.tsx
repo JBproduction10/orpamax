@@ -12,7 +12,7 @@ const AboutSection = () => {
             About Us
           </h2>
           <h3 className="text-4xl sm:text-5xl font-bold mb-6 leading-tight">
-            Small Enough to Care,<br className="hidden sm:block" /> Big Enough to Delivery
+            Small to Care,<br className="hidden sm:block" /> Big to Delivery
           </h3>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-8">
             We combine personal care with professional scale, offering unmatched cleaning and language services with integrity and precision.

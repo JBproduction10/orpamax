@@ -1,11 +1,10 @@
-import mongoose, { Schema, model, models } from "mongoose";
+import mongoose, { Schema, models, model } from 'mongoose';
 
 const ContactInfoSchema = new Schema({
-  type: { type: String, required: true }, // e.g., "visit", "call", "email"
+  type: { type: String, enum: ['visit', 'call', 'email'], required: true },
   title: { type: String, required: true },
-  description: { type: String, required: true },
-  details: { type: [String], required: true },
-  icon: { type: String, required: true }, // e.g., "map", "phone", "email"
+  description: { type: String },
+  lines: [{ type: String }],
 }, { timestamps: true });
 
-export default models.ContactInfo || model("ContactInfo", ContactInfoSchema);
+export default models.ContactInfo || model('ContactInfo', ContactInfoSchema);

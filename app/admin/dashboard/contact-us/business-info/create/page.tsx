@@ -1,92 +1,113 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
 import { Card, CardContent } from '@/components/ui/card'
-import { motion } from 'framer-motion'
 
 export default function CreateBusinessInfo() {
+  const [form, setForm] = useState({
+    location: { address: '', city: '', state: '', lat: '', lng: '' },
+    hours: [
+      { day: 'Monday - Friday', open: '', close: '' },
+      { day: 'Saturday', open: '', close: '' },
+      { day: 'Sunday', open: '', close: '' },
+    ],
+    holidayHours: '',
+    emergencyMessage: '',
+  })
+
   const router = useRouter()
-  const [location, setLocation] = useState({ lat: 0, lng: 0 })
 
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      pos => setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-      err => console.error('Geolocation error:', err)
-    )
-  }, [])
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setForm(prev => ({
+      ...prev,
+      location: { ...prev.location, [name]: value }
+    }))
+  }
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    const form = new FormData(e.currentTarget)
+  const handleHourChange = (index: number, field: 'open' | 'close', value: string) => {
+    const newHours = [...form.hours]
+    newHours[index] = { ...newHours[index], [field]: value }
+    setForm(prev => ({ ...prev, hours: newHours }))
+  }
 
-    const payload = {
-      hoursWeekdays: form.get('hoursWeekdays'),
-      hoursSaturday: form.get('hoursSaturday'),
-      hoursSunday: form.get('hoursSunday'),
-      holidayHours: form.get('holidayHours'),
-      emergencyServices: form.get('emergencyServices'),
-      locationName: form.get('locationName'),
-      locationCity: form.get('locationCity'),
-      locationLat: location.lat,
-      locationLng: location.lng,
-    }
-
+  const handleSubmit = async () => {
     await fetch('/api/admin/contact/business-info', {
       method: 'POST',
-      body: JSON.stringify(payload),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form)
     })
-
     router.push('/admin/dashboard/contact-us/business-info')
   }
 
-  const mapUrl =
-    location.lat && location.lng
-      ? `https://maps.googleapis.com/maps/api/staticmap?center=${location.lat},${location.lng}&zoom=14&size=600x300&markers=color:red%7C${location.lat},${location.lng}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAP_API}`
-      : ''
-
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="max-w-3xl mx-auto p-6"
-    >
+    <div className="max-w-2xl mx-auto p-6">
       <Card>
-        <CardContent className="p-6">
-          <h2 className="text-2xl font-semibold mb-6">Add Business Info</h2>
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Form Fields */}
-            {['Weekday Hours', 'Saturday Hours', 'Sunday Hours', 'Holiday Hours', 'Emergency Services Info', 'Location Name', 'City'].map((label, i) => {
-              const name = ['hoursWeekdays', 'hoursSaturday', 'hoursSunday', 'holidayHours', 'emergencyServices', 'locationName', 'locationCity'][i]
-              return (
-                <div key={name}>
-                  <Label htmlFor={name}>{label}</Label>
-                  <Input id={name} name={name} required />
+        <CardContent className="space-y-4 pt-6">
+          <h1 className="text-2xl font-semibold">Create Business Info</h1>
+
+          <div>
+            <Label>Address</Label>
+            <Input name="address" onChange={handleChange} placeholder="123 Main St" />
+          </div>
+          <div>
+            <Label>City</Label>
+            <Input name="city" onChange={handleChange} />
+          </div>
+          <div>
+            <Label>State</Label>
+            <Input name="state" onChange={handleChange} />
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <Label>Latitude</Label>
+              <Input name="lat" onChange={handleChange} />
+            </div>
+            <div>
+              <Label>Longitude</Label>
+              <Input name="lng" onChange={handleChange} />
+            </div>
+          </div>
+
+          <div>
+            <Label>Business Hours</Label>
+            {form.hours.map((hour, index) => (
+              <div key={hour.day} className="mb-4">
+                <p className="font-medium">{hour.day}</p>
+                <div className="grid grid-cols-2 gap-2 max-w-xs">
+                  <Input
+                    placeholder="Open"
+                    value={hour.open}
+                    onChange={e => handleHourChange(index, 'open', e.target.value)}
+                  />
+                  <Input
+                    placeholder="Close"
+                    value={hour.close}
+                    onChange={e => handleHourChange(index, 'close', e.target.value)}
+                  />
                 </div>
-              )
-            })}
+              </div>
+            ))}
+          </div>
 
-            {/* Location Preview */}
-            <div className="md:col-span-2 mt-4">
-              <p className="text-sm text-muted-foreground mb-2">
-                Location Preview (from your current position):
-              </p>
-              {mapUrl ? (
-                <img src={mapUrl} alt="Location preview" className="rounded-md shadow-md" />
-              ) : (
-                <p className="text-xs text-red-500">Unable to load map preview.</p>
-              )}
-            </div>
+          <div>
+            <Label>Holiday Hours</Label>
+            <Textarea name="holidayHours" onChange={e => setForm(f => ({ ...f, holidayHours: e.target.value }))} />
+          </div>
 
-            <div className="md:col-span-2 flex justify-end mt-4">
-              <Button type="submit" className="w-full md:w-auto">Save Info</Button>
-            </div>
-          </form>
+          <div>
+            <Label>Emergency Message</Label>
+            <Textarea name="emergencyMessage" onChange={e => setForm(f => ({ ...f, emergencyMessage: e.target.value }))} />
+          </div>
+
+          <Button onClick={handleSubmit}>Create</Button>
         </CardContent>
       </Card>
-    </motion.div>
+    </div>
   )
 }

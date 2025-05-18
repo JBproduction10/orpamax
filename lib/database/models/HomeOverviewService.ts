@@ -10,4 +10,4 @@ const HomeOverviewServiceSchema = new Schema({
   icon: { type: String }, // optional - store icon name like "FaBroom"
 }, { timestamps: true });
 
-export const HomeOverviewService = models.HomeOverviewServiceSchema || model('HomeOverviewService', HomeOverviewServiceSchema);
+export const HomeOverviewService = models.HomeOverviewService || model('HomeOverviewService', HomeOverviewServiceSchema);

@@ -38,7 +38,8 @@ const Sidebar = () => {
       title: 'Edit About Us',
       key: 'about',
       links: [
-        { href: '/admin/dashboard/about-us', label: 'About Us' },
+        { href: '/admin/dashboard/about-us/goal', label: 'About Us Goal' },
+        { href: '/admin/dashboard/about-us/story', label: 'About Us Story' },
       ],
     },
     {
@@ -47,6 +48,9 @@ const Sidebar = () => {
       links: [
         { href: '/admin/dashboard/contact-us/contact-info', label: 'Manage Contact Info' },
         { href: '/admin/dashboard/contact-us/business-info', label: 'Manage Business Info' },
+        { href: '/admin/dashboard/contact-us/social-media', label: 'Manage Social Medias' },
+        { href: '/admin/dashboard/contact-us/faq', label: 'Manage FAQs' },
+        { href: '/admin/dashboard/contact-us/hero', label: 'Manage Contact Hero/Banner' },
       ],
     },
     {
