@@ -101,11 +101,11 @@ export default function BusinessHourMap() {
                 ) : (
                   <div className="flex items-center justify-center w-full h-full text-gray-600">No map available</div>
                 )}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                {/* <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <div className="bg-white p-3 rounded-lg shadow-lg">
                     <FaMapMarker className="text-red-500 text-2xl" />
                   </div>
-                </div>
+                </div> */}
               </div>
               <CardContent className="py-4">
                 <div className="flex justify-between items-center">
