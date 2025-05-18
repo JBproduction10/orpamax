@@ -21,10 +21,11 @@ const afacad = Afacad({
   subsets: ["latin"],
 });
 
-// SEO metadata
+// SEO metadata (for crawlers and social previews)
 export const metadata: Metadata = {
   title: "Orpamax | Translation & Cleaning Services",
-  description: "Orpamax offers professional translation and commercial cleaning services. Small to care, big in delivery.",
+  description:
+    "Orpamax offers professional translation and commercial cleaning services. Small to care, big in delivery.",
   keywords: [
     "Orpamax",
     "Translation Services",
@@ -35,7 +36,7 @@ export const metadata: Metadata = {
     "Office Cleaning",
     "Deep Cleaning",
     "Services",
-    "Cleaning"
+    "Cleaning",
   ],
   authors: [{ name: "Patrick Bakajika", url: "https://orpamax.org" }],
   creator: "Orpamax",
@@ -56,9 +57,9 @@ export const metadata: Metadata = {
     ],
   },
   icons: {
-    icon: "./icononly.png",
-    shortcut: "./icononly.png",
-    apple: "./icononly.png",
+    icon: "/orpamax/icononly_transparent.png",
+    shortcut: "/orpamax/icononly_transparent.png",
+    apple: "/orpamax/icononly_transparent.png",
   },
 };
 
@@ -68,8 +69,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${afacad.variable}`}>
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} ${afacad.variable}`}
+    >
       <Head>
+        <link rel="icon" href="/orpamax/icononly_transparent.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/orpamax/icononly_transparent.png" />
+        <link rel="shortcut icon" href="/orpamax/icononly_transparent.png" />
+
+        {/* ✅ Google Maps Script */}
         <script
           src={`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAP_API_KEY}&libraries=maps,marker`}
           async
@@ -78,10 +87,8 @@ export default function RootLayout({
       </Head>
       <body>
         <SessionProviderWrapper>
-          {/* <Navbar /> */}
           {children}
           <Toaster richColors />
-          {/* <Footer /> */}
         </SessionProviderWrapper>
       </body>
     </html>
