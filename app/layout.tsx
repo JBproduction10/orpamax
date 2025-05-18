@@ -34,19 +34,21 @@ export const metadata: Metadata = {
     "Professional Interpreters",
     "Office Cleaning",
     "Deep Cleaning",
+    "Services",
+    "Cleaning"
   ],
-  authors: [{ name: "Patrick Bakajika", url: "https://orpamax.com" }],
+  authors: [{ name: "Patrick Bakajika", url: "https://orpamax.org" }],
   creator: "Orpamax",
   robots: "index, follow",
   openGraph: {
     type: "website",
-    url: "https://orpamax.com",
+    url: "https://orpamax.org",
     title: "Orpamax | Translation & Cleaning Services",
     description: "Small to care, big in delivery.",
     siteName: "Orpamax",
     images: [
       {
-        url: "https://orpamax.com/",
+        url: "https://orpamax.org/",
         width: 1200,
         height: 630,
         alt: "Orpamax Logo",
@@ -54,9 +56,9 @@ export const metadata: Metadata = {
     ],
   },
   icons: {
-    icon: "/orpamax/icononly.png",
-    shortcut: "/orpamax/icononly.png",
-    apple: "/orpamax/icononly.png",
+    icon: "./icononly.png",
+    shortcut: "./icononly.png",
+    apple: "./icononly.png",
   },
 };
 
